@@ -1,23 +1,6 @@
-// (Logically) Defines a new struct with given fields.
-.decl struct(name:type, f0:type, f1:type, f2:type)
+#include "common_types.dl"
 
-// -- facts --
-
-struct("Struct", "Ty1", "Ty2", "Ty3*").
-
-ptrOf("i8", "i8*").
-ptrOf("Ty1", "Ty1*").
-ptrOf("Ty2", "Ty2*").
-ptrOf("Ty3", "Ty3*").
-ptrOf("i8*", "i8**").
-ptrOf("Ty1*", "Ty1**").
-ptrOf("Ty2*", "Ty2**").
-ptrOf("Ty3*", "Ty3**").
-
-ptrOf("Struct", "Struct*").
-ptrOf("Struct*", "Struct**").
-
-// -- analyzed code --
+mkStruct("Dummy", "Ty1", "Ty2", "Ty3*").
 
 alloca("Ty1*", "r0", "h0").
 alloca("Ty1*", "r1", "h1").
