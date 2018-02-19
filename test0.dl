@@ -1,0 +1,41 @@
+// (Logically) Defines a new struct with given fields.
+.decl struct(name:type, f0:type, f1:type, f2:type)
+
+// -- facts --
+
+struct("Struct", "Ty1", "Ty2", "Ty3*").
+
+ptrOf("i8", "i8*").
+ptrOf("Ty1", "Ty1*").
+ptrOf("Ty2", "Ty2*").
+ptrOf("Ty3", "Ty3*").
+ptrOf("i8*", "i8**").
+ptrOf("Ty1*", "Ty1**").
+ptrOf("Ty2*", "Ty2**").
+ptrOf("Ty3*", "Ty3**").
+
+ptrOf("Struct", "Struct*").
+ptrOf("Struct*", "Struct**").
+
+// -- analyzed code --
+
+alloca("Ty1*", "r0", "h0").
+alloca("Ty1*", "r1", "h1").
+load("Ty1", "r2", "Ty1*", "r0").
+malloc("i8*", "r3", 2, "h2").
+bitcast("Struct*", "r4", "i8*", "r3").
+gep("Ty1*", "r5", "Struct*", "r4", 0).
+phi("Ty1*", "r6", "r1", "r5").
+load("Ty1", "r7", "Ty1*", "r6").
+store("Ty1", "r7", "Ty1*", "r5").
+
+bitcast("i8*", "r8", "Ty1*", "r6").
+bitcast("Ty2*", "r9", "i8*", "r8").
+bitcast("Ty1*", "r10", "Ty2*", "r9").
+load("Ty1", "r11", "Ty1*", "r0").
+store("Ty1", "r11", "Ty1*", "r11").
+
+alloca("Ty3*", "r12", "h3").
+gep("Ty3**", "r13", "Struct*", "r4", 2).
+store("Ty3*", "r12", "Ty3**", "r13").
+load("Ty3*", "r14", "Ty3**", "r13").
