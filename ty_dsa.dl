@@ -1,0 +1,157 @@
+.symbol_type reg
+.symbol_type heap
+.symbol_type type
+.number_type num
+
+// -- inputs --
+.decl alloca(t:type, r:reg, h:heap)
+.decl malloc(t:type, r:reg, n:num, h:heap)
+.decl load(res_ty:type, r:reg, from_ty:type, from:reg)
+.decl store(val_ty:type, val:reg, dest_ty:type, dest:reg)
+.decl bitcast(to_ty:type, r:reg, val_ty:type, val:reg)
+.decl gep(t:type, r:reg, src_ty:type, src:reg, idx:num)
+.decl phi(t:type, r:reg, src_a:reg, src_b:reg)
+
+// True iff ptr_ty is src_ty*
+.decl ptrOf(src_ty:type, ptr_ty:type)
+// True iff elem_ty* is ptr_ty
+.decl elemOf(ptr_ty:type, elem_ty:type)
+elemOf(PtrT, T) :- ptrOf(T, PtrT).
+
+// (Logically) Defines a new struct with given fields.
+.decl struct(name:type, f0:type, f1:type, f2:type)
+
+// -- facts --
+
+struct("Struct", "Ty1", "Ty2", "Ty3*").
+
+ptrOf("i8", "i8*").
+ptrOf("Ty1", "Ty1*").
+ptrOf("Ty2", "Ty2*").
+ptrOf("Ty3", "Ty3*").
+ptrOf("i8*", "i8**").
+ptrOf("Ty1*", "Ty1**").
+ptrOf("Ty2*", "Ty2**").
+ptrOf("Ty3*", "Ty3**").
+
+ptrOf("Struct", "Struct*").
+ptrOf("Struct*", "Struct**").
+
+// -- analyzed code --
+
+alloca("Ty1*", "r0", "h0").
+alloca("Ty1*", "r1", "h1").
+load("Ty1", "r2", "Ty1*", "r0").
+malloc("i8*", "r3", 2, "h2").
+bitcast("Struct*", "r4", "i8*", "r3").
+gep("Ty1*", "r5", "Struct*", "r4", 0).
+phi("Ty1*", "r6", "r1", "r5").
+load("Ty1", "r7", "Ty1*", "r6").
+store("Ty1", "r7", "Ty1*", "r5").
+
+bitcast("i8*", "r8", "Ty1*", "r6").
+bitcast("Ty2*", "r9", "i8*", "r8").
+bitcast("Ty1*", "r10", "Ty2*", "r9").
+load("Ty1", "r11", "Ty1*", "r0").
+store("Ty1", "r11", "Ty1*", "r11").
+
+alloca("Ty3*", "r12", "h3").
+gep("Ty3**", "r13", "Struct*", "r4", 2).
+store("Ty3*", "r12", "Ty3**", "r13").
+load("Ty3*", "r14", "Ty3**", "r13").
+
+// -- debug info and helpers --
+
+// [Debug] Track all used registers.
+.decl register(r:reg, t:type)
+register(R, T) :- alloca(T, R, _).
+register(R, T) :- malloc(T, R, _, _).
+register(R, T) :- load(T, R, _, _).
+register(R, T) :- bitcast(T, R, _,  _).
+register(R, T) :- gep(T, R, _, _, _).
+register(R, T) :- phi(T, R, _, _).
+//.output register()
+
+// [Debug] track all heap objects.
+.decl heap_obj(h:heap, size:num)
+heap_obj(H, -1) :- alloca(_, _, H).
+heap_obj(H, N) :- malloc(_, _, N, H).
+.output heap_obj()
+
+// [Util] True iff t is a pointer type.
+.decl isPtrTy(t:type)
+isPtrTy(T) :- elemOf(T, _).
+
+// [Debug] Display all known types grouped by element type.
+.decl ty_hierarchy(t0:type, t1:type, t2:type)
+ty_hierarchy(T0, T1, T2) :- ptrOf(T0, T1), ptrOf(T1, T2), elemOf(T2, T1), elemOf(T1, T0).
+.output ty_hierarchy()
+
+// -- analysis --
+
+// Register points to a field of a given type in a given heap.
+.decl RegPtsTo(r:reg, h:heap, t:type)
+
+// Register comes from a pointer register of some type, ignoring bitcasts.
+.decl StripPtrCasts(r:reg, source:reg, t:type)
+
+// A field of a given type points to another field in a given heap,
+// of a given type. source field type is type*. 
+.decl FldPtsTo(h1:heap, t1:type, h2:heap, t2:type)
+
+.decl HeapPtsTo(h1:heap, h2:heap)
+HeapPtsTo(H1, H2) :- FldPtsTo(H1, _, H2, _).
+.output HeapPtsTo()
+
+// Given heap is type-collapsed.
+.decl tCollapsed(h:heap)
+
+StripPtrCasts(R, R, T) :- alloca(T, R, _).
+StripPtrCasts(R, R, T) :- malloc(T, R, _, _).
+StripPtrCasts(R, R, T) :- load(T, R, _, _), isPtrTy(T).
+StripPtrCasts(R, R, T) :- gep(T, R, _, _, _), isPtrTy(T).
+StripPtrCasts(R, R, T) :- phi(T, R, _, _), isPtrTy(T).
+StripPtrCasts(R, Source, T) :- StripPtrCasts(R1, Source, T), bitcast(T1, R, T2, R1),
+                               isPtrTy(T1), isPtrTy(T2).
+
+RegPtsTo(R, H, T) :- alloca(PtrT, R, H), elemOf(PtrT, T).
+RegPtsTo(R, H, "i8") :- malloc(_, R, _, H).
+RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
+
+// RegPtsTo(R, H, PtrT) :- RegPtsTo(Source, H, _), load(PtrT, R, _, Source),
+//                     elemOf(PtrT, T).
+
+RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _), gep(PtrT, R, _, R2, _), elemOf(PtrT, FT).
+
+RegPtsTo(R, H1, T1), RegPtsTo(R, H2, T2),
+RegPtsTo(R1, H2, T2), RegPtsTo(R2, H1, T1) :- 
+        RegPtsTo(R1, H1, T1), RegPtsTo(R2, H2, T2), phi(T, R, R1, R2).
+
+RegPtsTo(R, H2, T) :- load(T, R, _, Source),
+                      StripPtrCasts(Source, OrigSource, _OrigTy),
+                      RegPtsTo(OrigSource, H1, _),
+                      FldPtsTo(H1, _, H2, _).
+
+
+FldPtsTo(H1, DstPtrTy, H2, ValPtrTy) :- store(ValPtrTy, Val, DstPtrTy, Dst),
+                                        RegPtsTo(Val, H2, _SrcTy),
+                                        RegPtsTo(Dst, H1, _DstTy),
+                                        isPtrTy(ValPtrTy).
+
+
+// If H1 is collapsed, a pointer from any outgoing pointer goes to all destination fields.
+FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H1), FldPtsTo(H1, _, H2, T2), 
+                                            FldPtsTo(H1, T1, H2, _).
+
+// If H2 is collapsed, a pointer to H2 is a pointer to any (known) field of H2.
+FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H2), FldPtsTo(H1, T1, H2, _),
+                                            FldPtsTo(_, _, H2, T2).
+
+tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T2.
+tCollapsed(H) :- RegPtsTo(R, H, T1), RegPtsTo(R, H, T2), T1 != T2.
+.output tCollapsed()
+
+// [Debug] Dump tables.
+.output StripPtrCasts()
+.output RegPtsTo()
+.output FldPtsTo()
