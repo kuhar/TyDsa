@@ -7,27 +7,16 @@ ptrOf("Ty1*", "Ty1**").
 ptrOf("Ty2*", "Ty2**").
 ptrOf("Ty3*", "Ty3**").
 
-#define MK_STRUCT1(A) \
-  .decl struct(name_:type, A_:type)
+.decl struct(name:type, FD1:type, FD2:type, FD3:type)
 
-#define MK_STRUCT2(A, B) \
-  .decl struct(name_:type, A_:type, B_:type)
+struct("Foo", "Ty1", "Ty2", "Ty3*").
+ptrOf("Foo", "Foo*").
+ptrOf("Foo*", "Foo**").
 
-#define MK_STRUCT3(A, B, C) \
-  .decl struct(name_:type, A_:type, B_:type, C_:type)
+struct("Bar", "Ty1*", "Ty2*", "Ty3*").
+ptrOf("Bar", "Bar*").
+ptrOf("Bar*", "Bar**").
 
-#define MK_STRUCT4(A, B, C, D) \
-  .decl struct(name_:type, A_:type, B_:type, C_:type, D_:type)
-
-#define MK_STRUCT5(A, B, C, D, E) \
-  .decl struct(name_:type, A_:type, B_:type, C_:type, D_:type, E_:type)
-
-#define _GET_OVERRIDE(_1, _2, _3, _4, _5, NAME, ...) NAME
-#define BUILD_STRUCT(...) _GET_OVERRIDE(__VA_ARGS__, \
-    MK_STRUCT5, MK_STRUCT4, \
-    MK_STRUCT3, MK_STRUCT2, MK_STRUCT1)(__VA_ARGS__)
-
-#define mkStruct(Name, ...) BUILD_STRUCT(__VA_ARGS__) \
-                            struct("Struct", __VA_ARGS__). \
-                            ptrOf("Struct", "Struct*"). \
-                            ptrOf("Struct*", "Struct**")
+struct("Baz", "Ty1*", "Ty1", "Ty1*").
+ptrOf("Baz", "Baz*").
+ptrOf("Baz*", "Baz**").

@@ -90,10 +90,9 @@ RegPtsTo(R1, H2, T2), RegPtsTo(R2, H1, T1) :-
         RegPtsTo(R1, H1, T1), RegPtsTo(R2, H2, T2), phi(T, R, R1, R2).
 
 RegPtsTo(R, H2, T) :- load(T, R, _, Source),
-                      StripPtrCasts(Source, OrigSource, _OrigTy),
-                      RegPtsTo(OrigSource, H1, _),
+                      RegPtsTo(Source, H1, _),
                       FldPtsTo(H1, _, H2, _).
-
+ 
 
 FldPtsTo(H1, DstPtrTy, H2, ValPtrTy) :- store(ValPtrTy, Val, DstPtrTy, Dst),
                                         RegPtsTo(Val, H2, _SrcTy),
