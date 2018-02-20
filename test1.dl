@@ -1,0 +1,5 @@
+#include "common_types.dl"
+
+alloca("Ty1**", "r0", "h0").
+load("Ty1*", "r1", "Ty1**", "r0").
+load("Ty2*", "r2", "Ty2**", "r0").

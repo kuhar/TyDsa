@@ -80,8 +80,8 @@ RegPtsTo(R, H, T) :- alloca(PtrT, R, H), elemOf(PtrT, T).
 RegPtsTo(R, H, "i8") :- malloc(_, R, _, H).
 RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
 
-// RegPtsTo(R, H, PtrT) :- RegPtsTo(Source, H, _), load(PtrT, R, _, Source),
-//                     elemOf(PtrT, T).
+RegPtsTo(R, H, PtrT) :- load(PtrT, R, _, Source), RegPtsTo(Source, H, _),
+                        elemOf(PtrT, T).
 
 RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _), gep(PtrT, R, _, R2, _), elemOf(PtrT, FT).
 
@@ -108,8 +108,10 @@ FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H1), FldPtsTo(H1, _, H2, T2),
 FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H2), FldPtsTo(H1, T1, H2, _),
                                             FldPtsTo(_, _, H2, T2).
 
+RegPtsTo(R, H, T2) :- tCollapsed(H), RegPtsTo(R, H, _T1), RegPtsTo(_R2, H, T2).
+
 tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T2.
-tCollapsed(H) :- RegPtsTo(R, H, T1), RegPtsTo(R, H, T2), T1 != T2.
+tCollapsed(H) :- RegPtsTo(_, H, T1), RegPtsTo(_, H, T2), T1 != T2.
 .output tCollapsed()
 
 // [Debug] Dump tables.
