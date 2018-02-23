@@ -1,0 +1,4 @@
+#include "common_types.dl"
+
+alloca("Foo*", "r0", "h1").
+gep("Ty3**", "r1", "Foo*", "r0", 2).

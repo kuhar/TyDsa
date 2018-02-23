@@ -1,0 +1,13 @@
+#include "common_types.dl"
+
+alloca("Ty3**", "r0", "h0").
+alloca("Ty3*", "r1", "h1").
+store("Ty3*", "r1", "Ty3**", "r0").
+
+alloca("Foo*", "r2", "h2").
+gep("Ty3**", "r3", "Foo*", "r2", 2).
+store("Ty3*", "r1", "Ty3**", "r3").
+
+load("Ty3*", "r4", "Ty3**", "r3").
+bitcast("Ty2*", "r5", "Ty3*", "r4").
+load("Ty2", "r6", "Ty2*", "r5").

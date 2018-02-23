@@ -7,16 +7,35 @@ ptrOf("Ty1*", "Ty1**").
 ptrOf("Ty2*", "Ty2**").
 ptrOf("Ty3*", "Ty3**").
 
-.decl struct(name:type, FD1:type, FD2:type, FD3:type)
+sizeOf("i8", 1).
+sizeOf("Ty1", 4).
+sizeOf("Ty2", 2).
+sizeOf("Ty3", 12).
 
-struct("Foo", "Ty1", "Ty2", "Ty3*").
+class("Foo", 3).
 ptrOf("Foo", "Foo*").
 ptrOf("Foo*", "Foo**").
+field("Foo", "Ty1", 0).
+field("Foo", "Ty2", 1).
+field("Foo", "Ty1*", 2).
 
-struct("Bar", "Ty1*", "Ty2*", "Ty3*").
+class("Bar", 3).
 ptrOf("Bar", "Bar*").
 ptrOf("Bar*", "Bar**").
+field("Bar", "Ty1*", 0).
+field("Bar", "Ty2*", 1).
+field("Bar", "Ty3*", 2).
 
-struct("Baz", "Ty1*", "Ty1", "Ty1*").
+class("Baz", 3).
 ptrOf("Baz", "Baz*").
 ptrOf("Baz*", "Baz**").
+field("Baz", "Ty1*", 0).
+field("Baz", "Ty1", 1).
+field("Baz", "Ty1*", 2).
+
+class("B", 3).
+ptrOf("B", "B*").
+ptrOf("B*", "B**").
+field("B", "Ty3*", 0).
+field("B", "Foo", 1).
+field("B", "Ty1", 2).

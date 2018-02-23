@@ -17,6 +17,32 @@
 // True iff elem_ty* is ptr_ty
 .decl elemOf(ptr_ty:type, elem_ty:type)
 elemOf(PtrT, T) :- ptrOf(T, PtrT).
+.decl isPtrTy(t:type)
+isPtrTy(T) :- elemOf(T, _).
+
+.decl sizeOf(ty:type, sz:num)
+sizeOf(PtrT, 8) :- isPtrTy(PtrT).
+
+.decl class(name:type, num_fields:num)
+.decl field(class:type, ty:type, index:num)
+
+.decl sizeOfClass_n(name:type, n:num, acc_sz:num)
+sizeOfClass_n(C, 0, Sz) :- class(C, _), field(C, FldTy, 0), sizeOf(FldTy, Sz).
+sizeOfClass_n(C, K, AccSz + Sz) :- sizeOfClass_n(C, K - 1, AccSz),
+                                   field(C, FldTy, K), sizeOf(FldTy, Sz).
+sizeOf(C, Sz) :- class(C, N), sizeOfClass_n(C, N - 1, Sz).  
+
+.decl typeAtOffset(class_ty:type, ty:type, offset:num)
+typeAtOffset(T, T, 0) :- sizeOf(T, _).  
+typeAtOffset(C, T, N - SzT) :- sizeOfClass_n(C, K, N),
+                               field(C, T, K), sizeOf(T, SzT).
+typeAtOffset(C, InnT, N + M) :- typeAtOffset(C, T, N),
+                                typeAtOffset(T, InnT, M).
+
+.output sizeOf()
+.output field()
+.output sizeOfClass_n()
+.output typeAtOffset() 
 
 
 #include "_current_test.dl"
@@ -39,10 +65,6 @@ register(R, T) :- phi(T, R, _, _).
 heap_obj(H, -1) :- alloca(_, _, H).
 heap_obj(H, N) :- malloc(_, _, N, H).
 .output heap_obj()
-
-// [Util] True iff t is a pointer type.
-.decl isPtrTy(t:type)
-isPtrTy(T) :- elemOf(T, _).
 
 // [Debug] Display all known types grouped by element type.
 .decl ty_hierarchy(t0:type, t1:type, t2:type)
@@ -80,14 +102,16 @@ RegPtsTo(R, H, T) :- alloca(PtrT, R, H), elemOf(PtrT, T).
 RegPtsTo(R, H, "i8") :- malloc(_, R, _, H).
 RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
 
-RegPtsTo(R, H, PtrT) :- load(PtrT, R, _, Source), RegPtsTo(Source, H, _),
-                        elemOf(PtrT, T).
-
 RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _), gep(PtrT, R, _, R2, _), elemOf(PtrT, FT).
 
 RegPtsTo(R, H1, T1), RegPtsTo(R, H2, T2),
 RegPtsTo(R1, H2, T2), RegPtsTo(R2, H1, T1) :- 
         RegPtsTo(R1, H1, T1), RegPtsTo(R2, H2, T2), phi(T, R, R1, R2).
+
+//RegPtsTo(R, H, PtrT) :- load(PtrT, R, _, Source),
+//                        RegPtsTo(Source, H, _),
+//                        elemOf(PtrT, T).
+
 
 RegPtsTo(R, H2, T) :- load(T, R, _, Source),
                       RegPtsTo(Source, H1, _),
@@ -96,8 +120,7 @@ RegPtsTo(R, H2, T) :- load(T, R, _, Source),
 
 FldPtsTo(H1, DstPtrTy, H2, ValPtrTy) :- store(ValPtrTy, Val, DstPtrTy, Dst),
                                         RegPtsTo(Val, H2, _SrcTy),
-                                        RegPtsTo(Dst, H1, _DstTy),
-                                        isPtrTy(ValPtrTy).
+                                        RegPtsTo(Dst, H1, _DstTy).
 
 
 // If H1 is collapsed, a pointer from any outgoing pointer goes to all destination fields.
@@ -111,7 +134,7 @@ FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H2), FldPtsTo(H1, T1, H2, _),
 RegPtsTo(R, H, T2) :- tCollapsed(H), RegPtsTo(R, H, _T1), RegPtsTo(_R2, H, T2).
 
 tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T2.
-tCollapsed(H) :- RegPtsTo(_, H, T1), RegPtsTo(_, H, T2), T1 != T2.
+// tCollapsed(H) :- RegPtsTo(_, H, T1), RegPtsTo(_, H, T2), T1 != T2.
 .output tCollapsed()
 
 // [Debug] Dump tables.
