@@ -46,7 +46,7 @@ register(R, T) :- phi(T, R, _, _).
 
 // [Debug] track all heap objects.
 .decl heap_obj(h:heap, size:num)
-heap_obj(H, -1) :- alloca(_, _, H).
+heap_obj(H, N) :- alloca(PtrT, _, H), elemOf(PtrT, T), sizeOf(T, N).
 heap_obj(H, N) :- malloc(_, _, N, H).
 .output heap_obj()
 
@@ -70,12 +70,25 @@ typeAtOffset(C, T, N - SzT) :- sizeOfClass_n(C, K, N),
 typeAtOffset(C, InnT, N + M) :- typeAtOffset(C, T, N),
                                 typeAtOffset(T, InnT, M).
 
+.decl isPrimitive(T:type)
+isPrimitive(T) :- sizeOf(T, _), !class(T, _).
+
+.decl innerPrimitiveTy(ty:type, inner_ty:type)
+innerPrimitiveTy(T, InnT) :- typeAtOffset(T, InnT, _), 
+                             isPrimitive(InnT).
+
+
+
+.decl heapField(h:heap, fld_ty:type)
+
 
 // Register points to a field of a given type in a given heap.
 .decl RegPtsTo(r:reg, h:heap, t:type)
 
 // Register comes from a pointer register of some type, ignoring bitcasts.
 .decl StripPtrCasts(r:reg, source:reg, t:type)
+
+.decl RegOrigin(r:reg, origin:reg)
 
 // A field of a given type points to another field in a given heap,
 // of a given type. source field type is type*. 
@@ -92,22 +105,35 @@ StripPtrCasts(R, R, T) :- malloc(T, R, _, _).
 StripPtrCasts(R, R, T) :- load(T, R, _, _), isPtrTy(T).
 StripPtrCasts(R, R, T) :- gep(T, R, _, _, _), isPtrTy(T).
 StripPtrCasts(R, R, T) :- phi(T, R, _, _), isPtrTy(T).
-StripPtrCasts(R, Source, T) :- StripPtrCasts(R1, Source, T), bitcast(T1, R, T2, R1),
+StripPtrCasts(R, Source, T) :- StripPtrCasts(R1, Source, T), 
+                               bitcast(T1, R, T2, R1),
                                isPtrTy(T1), isPtrTy(T2).
 
-RegPtsTo(R, H, T) :- alloca(PtrT, R, H), elemOf(PtrT, T).
-RegPtsTo(R, H, "i8") :- malloc(_, R, _, H).
+
+RegOrigin(R, R) :- alloca(_, R, _).
+RegOrigin(R, R) :- malloc(_, R, _, _).
+RegOrigin(R, R) :- load(T, R, _, _), isPtrTy(T).
+RegOrigin(R, R) :- gep(_, R, _, _, _).
+RegOrigin(R, SrcR1),
+RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
+                       RegOrigin(R1, SrcR1),
+                       RegOrigin(R2, SrcR2).
+RegOrigin(R, Src) :- bitcast(_, R, _, R2), RegOrigin(R2, Src).
+
+
 RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
+RegPtsTo(R, H, T) :- alloca(T, R, H).
+RegPtsTo(R, H, "i8") :- malloc(_, R, _, H).
 
-RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _), gep(PtrT, R, _, R2, _), elemOf(PtrT, FT).
+RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _),
+                      gep(PtrT, R, _, R2, _), elemOf(PtrT, FT).
 
-// One way - Andersen, two way - Steensgaard
+// One way - Andersen, two way - Steensgaard.
 RegPtsTo(R, H1, T1), RegPtsTo(R, H2, T2) :- 
         RegPtsTo(R1, H1, T1), RegPtsTo(R2, H2, T2), phi(T, R, R1, R2).
 
-//RegPtsTo(R, H, PtrT) :- load(PtrT, R, _, Source),
-//                        RegPtsTo(Source, H, _),
-//                        elemOf(PtrT, T).
+heapField(H, InnT) :- load(T, R, _, Source), RegPtsTo(Source, H, _),
+                      innerPrimitiveTy(T, InnT).
 
 
 RegPtsTo(R, H2, T) :- load(T, R, _, Source),
@@ -135,10 +161,12 @@ tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T
 .output tCollapsed()
 
 // [Debug] Dump tables.
-.output sizeOf()
-.output field()
-.output sizeOfClass_n()
-.output typeAtOffset() 
+//.output sizeOf()
+//.output field()
+//.output sizeOfClass_n()
+//.output typeAtOffset()
+.output heapField()
+.output RegOrigin() 
 .output StripPtrCasts()
 .output RegPtsTo()
 .output FldPtsTo()
