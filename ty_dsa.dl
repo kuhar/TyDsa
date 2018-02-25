@@ -121,7 +121,8 @@ StripPtrCasts(R, Source, T) :- StripPtrCasts(R1, Source, T),
 RegOrigin(R, R) :- alloca(_, R, _).
 RegOrigin(R, R) :- malloc(_, R, _, _).
 RegOrigin(R, R) :- load(T, R, _, _), isPtrTy(T).
-RegOrigin(R, R) :- gep(_, R, _, _SrcR, _).
+RegOrigin(R, R) :- gep(_, R, _, _SrcR, N), N != 0.
+RegOrigin(R, SrcR) :- gep(_, R, _, SrcR, 0).
 RegOrigin(R, SrcR1),
 RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
                        RegOrigin(R1, SrcR1),
@@ -134,8 +135,12 @@ heapField(H, T) :- NewRPT(_, H, T).
 NewRPT(R, H, T) :- NewRPT(SrcR, H, T), RegOrigin(R, SrcR).
 NewRPT(R, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
                    allocFn(R, H).
-NewRPT(R, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
-                   NewRPT(R, H, _).
+NewRPT(FldR, H, FldTy) :- gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
+                          elemOf(FldPtrT, FldTy),  
+                          RegOrigin(SrcR, R), allocFn(R, H).
+                   
+NewRPT(AccR, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
+                      NewRPT(R, H, _).
 
 RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
 RegPtsTo(R, H, T) :- alloca(T, R, H).
@@ -160,18 +165,18 @@ FldPtsTo(H1, DstPtrTy, H2, ValPtrTy) :- store(ValPtrTy, Val, DstPtrTy, Dst),
 
 
 // If H1 is collapsed, a pointer from any outgoing pointer goes to all destination fields.
-FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H1), FldPtsTo(H1, _, H2, T2), 
-                                            FldPtsTo(H1, T1, H2, _).
+//FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H1), FldPtsTo(H1, _, H2, T2), 
+//                                            FldPtsTo(H1, T1, H2, _).
 
 // If H2 is collapsed, a pointer to H2 is a pointer to any (known) field of H2.
-FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H2), FldPtsTo(H1, T1, H2, _),
-                                            FldPtsTo(_, _, H2, T2).
+//FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H2), FldPtsTo(H1, T1, H2, _),
+//                                            FldPtsTo(_, _, H2, T2).
 
-RegPtsTo(R, H, T2) :- tCollapsed(H), RegPtsTo(R, H, _T1), RegPtsTo(_R2, H, T2).
+//RegPtsTo(R, H, T2) :- tCollapsed(H), RegPtsTo(R, H, _T1), RegPtsTo(_R2, H, T2).
 
-tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T2.
+//tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T2.
 // tCollapsed(H) :- RegPtsTo(_, H, T1), RegPtsTo(_, H, T2), T1 != T2.
-.output tCollapsed()
+//.output tCollapsed()
 
 // [Debug] Dump tables.
 //.output sizeOf()
@@ -181,7 +186,8 @@ tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T
 .output heapField()
 .output RegOrigin() 
 .output StripPtrCasts()
-.output RegPtsTo()
+//.output RegPtsTo()
 .output NewRPT()
+.output memAccess()
 .output FldPtsTo()
 .output HeapPtsTo()
