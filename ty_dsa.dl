@@ -39,6 +39,8 @@ sizeOf(PtrT, 8) :- isPtrTy(PtrT).
 register(R, T) :- alloca(T, R, _).
 register(R, T) :- malloc(T, R, _, _).
 register(R, T) :- load(T, R, _, _).
+register(ValR, ValT),
+register(DestR, DestT) :- store(ValT, ValR, DestT, DestR).
 register(R, T) :- bitcast(T, R, _,  _).
 register(R, T) :- gep(T, R, _, _, _).
 register(R, T) :- phi(T, R, _, _).
@@ -53,7 +55,7 @@ heap_obj(H, N) :- malloc(_, _, N, H).
 // [Debug] Display all known types grouped by element type.
 .decl ty_hierarchy(t0:type, t1:type, t2:type)
 ty_hierarchy(T0, T1, T2) :- ptrOf(T0, T1), ptrOf(T1, T2), elemOf(T2, T1), elemOf(T1, T0).
-.output ty_hierarchy()
+//.output ty_hierarchy()
 
 // -- analysis --
 
@@ -78,9 +80,15 @@ innerPrimitiveTy(T, InnT) :- typeAtOffset(T, InnT, _),
                              isPrimitive(InnT).
 
 
-
 .decl heapField(h:heap, fld_ty:type)
+.decl allocFn(r:reg, h:heap)
+allocFn(R, H) :- alloca(_T, R, H).
+allocFn(R, H) :- malloc(_T, R, _N, H).
 
+.decl memAccess(ptrT:type, r:reg)
+memAccess(T, R) :- load(T, _, _PtrT, R).
+memAccess(T, ValR) :- store(ValT, ValR, _, _), elemOf(ValT, T).
+memAccess(ValT, SrcR) :- store(ValT, _, _SrcT, SrcR).
 
 // Register points to a field of a given type in a given heap.
 .decl RegPtsTo(r:reg, h:heap, t:type)
@@ -113,13 +121,21 @@ StripPtrCasts(R, Source, T) :- StripPtrCasts(R1, Source, T),
 RegOrigin(R, R) :- alloca(_, R, _).
 RegOrigin(R, R) :- malloc(_, R, _, _).
 RegOrigin(R, R) :- load(T, R, _, _), isPtrTy(T).
-RegOrigin(R, R) :- gep(_, R, _, _, _).
+RegOrigin(R, R) :- gep(_, R, _, _SrcR, _).
 RegOrigin(R, SrcR1),
 RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
                        RegOrigin(R1, SrcR1),
                        RegOrigin(R2, SrcR2).
 RegOrigin(R, Src) :- bitcast(_, R, _, R2), RegOrigin(R2, Src).
 
+.decl NewRPT(r:reg, h:heap, t:type)
+heapField(H, T) :- NewRPT(_, H, T).
+
+NewRPT(R, H, T) :- NewRPT(SrcR, H, T), RegOrigin(R, SrcR).
+NewRPT(R, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
+                   allocFn(R, H).
+NewRPT(R, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
+                   NewRPT(R, H, _).
 
 RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
 RegPtsTo(R, H, T) :- alloca(T, R, H).
@@ -131,9 +147,6 @@ RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _),
 // One way - Andersen, two way - Steensgaard.
 RegPtsTo(R, H1, T1), RegPtsTo(R, H2, T2) :- 
         RegPtsTo(R1, H1, T1), RegPtsTo(R2, H2, T2), phi(T, R, R1, R2).
-
-heapField(H, InnT) :- load(T, R, _, Source), RegPtsTo(Source, H, _),
-                      innerPrimitiveTy(T, InnT).
 
 
 RegPtsTo(R, H2, T) :- load(T, R, _, Source),
@@ -169,5 +182,6 @@ tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T
 .output RegOrigin() 
 .output StripPtrCasts()
 .output RegPtsTo()
+.output NewRPT()
 .output FldPtsTo()
 .output HeapPtsTo()
