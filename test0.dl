@@ -14,7 +14,7 @@ bitcast("i8*", "r8", "Ty1*", "r6").
 bitcast("Ty2*", "r9", "i8*", "r8").
 bitcast("Ty1*", "r10", "Ty2*", "r9").
 load("Ty1", "r11", "Ty1*", "r0").
-store("Ty1", "r11", "Ty1*", "r11").
+store("Ty1", "r11", "Ty1*", "r10").
 
 alloca("Ty3*", "r12", "h3").
 gep("Ty3**", "r13", "Foo*", "r4", 2).
