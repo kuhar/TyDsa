@@ -1,6 +1,10 @@
 #include "common_types.dl"
 
-alloca("Foo*", "r0", "h1").
-gep("Ty3**", "r1", "Foo*", "r0", 2).
-bitcast("Ty2**", "r2", "Ty3**", "r1").
-load("Ty2*", "r3", "Ty2**", "r2").
+malloc("i8*", "r0", 20, "h1").
+bitcast("Foo*", "r1", "i8*", "r0").
+gep("Ty3**", "r2", "Foo*", "r1", 2).
+bitcast("Ty2**", "r3", "Ty3**", "r2").
+load("Ty2*", "r4", "Ty2**", "r3").
+
+alloca("Foo**", "r5", "h2").
+store("Foo*", "r1", "Fo**", "r5").

@@ -1,6 +1,7 @@
 .symbol_type reg
 .symbol_type heap
 .symbol_type type
+.symbol_type list
 .number_type num
 
 // -- inputs --
@@ -26,6 +27,10 @@ sizeOf(PtrT, 8) :- isPtrTy(PtrT).
 .decl class(name:type, num_fields:num)
 .decl field(class:type, ty:type, index:num)
 
+.decl has_type(ty_list:list, ty:type)
+has_type(L, T) :- contains(type, list).
+
+.decl append_type(in_list:list, ty:type, out_list:list)
 
 
 #include "_current_test.dl"
@@ -79,6 +84,8 @@ isPrimitive(T) :- sizeOf(T, _), !class(T, _).
 innerPrimitiveTy(T, InnT) :- typeAtOffset(T, InnT, _), 
                              isPrimitive(InnT).
 
+.decl heapTypes(h:heap, tys:type_list)
+.output heapTypes()
 
 .decl heapField(h:heap, fld_ty:type)
 .decl allocFn(r:reg, h:heap)
