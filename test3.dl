@@ -7,4 +7,4 @@ bitcast("Ty2**", "r3", "Ty3**", "r2").
 load("Ty2*", "r4", "Ty2**", "r3").
 
 alloca("Foo**", "r5", "h2").
-store("Foo*", "r1", "Fo**", "r5").
+store("Foo*", "r1", "Foo**", "r5").

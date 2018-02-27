@@ -58,7 +58,7 @@ Ty3 = Type("Ty3", 12)
 Foo = Struct("Foo", [Ty1, Ty2, Ty1.add_ptr()])
 Bar = Struct("Bar", [Ty1.add_ptr(), Ty2.add_ptr(), Ty3.add_ptr()])
 Baz = Struct("Baz", [Ty1.add_ptr(), Ty1, Ty1.add_ptr()])
-Bam = Struct("Bam", [Ty3.add_ptr(), Foo, Ty1])
+Bam = Struct("Bam", [Foo, Ty3.add_ptr(), Ty1])
 
 primitive_types = [i8, Ty1, Ty2, Ty3]
 types = [i8, Ty1, Ty2, Ty3, Foo, Bar, Baz, Bam]

@@ -4,6 +4,8 @@
 .symbol_type list
 .number_type num
 
+#define EmptyList "{}"
+
 // -- inputs --
 .decl alloca(t:type, r:reg, h:heap)
 .decl malloc(t:type, r:reg, n:num, h:heap)
@@ -27,12 +29,10 @@ sizeOf(PtrT, 8) :- isPtrTy(PtrT).
 .decl class(name:type, num_fields:num)
 .decl field(class:type, ty:type, index:num)
 
-.decl has_type(ty_list:list, ty:type)
 .decl append_type(in_list:list, ty:type, out_list:list)
-
+.decl has_type(ty_list:list, ty:type)
 
 #include "_current_test.dl"
-
 
 
 // -- debug info and helpers --
@@ -82,6 +82,20 @@ isPrimitive(T) :- sizeOf(T, _), !class(T, _).
 innerPrimitiveTy(T, InnT) :- typeAtOffset(T, InnT, _), 
                              isPrimitive(InnT).
 
+.decl firstPrimitiveTy(ty:type, fty:type)
+firstPrimitiveTy(T, T) :- isPrimitive(T), !isPtrTy(T).
+firstPrimitiveTy(T, PrimInnT) :- !isPrimitive(T), !isPtrTy(T),
+                             typeAtOffset(T, InnT, 0),
+                             firstPrimitiveTy(InnT, PrimInnT).
+
+firstPrimitiveTy(PtrT, PrimPtrT) :- elemOf(PtrT, T), !isPtrTy(T),
+                                    firstPrimitiveTy(T, PrimT),
+                                    ptrOf(PrimT, PrimPtrT).
+firstPrimitiveTy(PtrPtrT, PrimPtrPtrT) :- elemOf(PtrPtrT, PtrT),
+                                          firstPrimitiveTy(PtrT, PrimPtrT),
+                                          ptrOf(PrimPtrT, PrimPtrPtrT).
+.output firstPrimitiveTy()
+
 //.decl heapTypes(h:heap, tys:type_list)
 //.output heapTypes()
 
@@ -95,13 +109,11 @@ memAccess(T, R) :- load(T, _, _PtrT, R).
 memAccess(T, ValR) :- store(ValT, ValR, _, _), elemOf(ValT, T).
 memAccess(ValT, SrcR) :- store(ValT, _, _SrcT, SrcR).
 
-// Register points to a field of a given type in a given heap.
-.decl RegPtsTo(r:reg, h:heap, t:type)
-
-// Register comes from a pointer register of some type, ignoring bitcasts.
-.decl StripPtrCasts(r:reg, source:reg, t:type)
-
+// Register comes from a pointer register, ignoring bitcasts and geps by 0.
 .decl RegOrigin(r:reg, origin:reg)
+
+// Register points to a field of a given type in a given heap.
+.decl RegPtsTo(r:reg, h:heap, tys:list)
 
 // A field of a given type points to another field in a given heap,
 // of a given type. source field type is type*. 
@@ -111,17 +123,7 @@ memAccess(ValT, SrcR) :- store(ValT, _, _SrcT, SrcR).
 HeapPtsTo(H1, H2) :- FldPtsTo(H1, _, H2, _).
 
 // Given heap is type-collapsed.
-.decl tCollapsed(h:heap)
-
-StripPtrCasts(R, R, T) :- alloca(T, R, _).
-StripPtrCasts(R, R, T) :- malloc(T, R, _, _).
-StripPtrCasts(R, R, T) :- load(T, R, _, _), isPtrTy(T).
-StripPtrCasts(R, R, T) :- gep(T, R, _, _, _), isPtrTy(T).
-StripPtrCasts(R, R, T) :- phi(T, R, _, _), isPtrTy(T).
-StripPtrCasts(R, Source, T) :- StripPtrCasts(R1, Source, T), 
-                               bitcast(T1, R, T2, R1),
-                               isPtrTy(T1), isPtrTy(T2).
-
+//.decl tCollapsed(h:heap)
 
 RegOrigin(R, R) :- alloca(_, R, _).
 RegOrigin(R, R) :- malloc(_, R, _, _).
@@ -134,54 +136,52 @@ RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
                        RegOrigin(R2, SrcR2).
 RegOrigin(R, Src) :- bitcast(_, R, _, R2), RegOrigin(R2, Src).
 
-.decl NewRPT(r:reg, h:heap, t:type)
-heapField(H, T) :- NewRPT(_, H, T).
-
-NewRPT(R, H, T) :- NewRPT(SrcR, H, T), RegOrigin(R, SrcR).
-NewRPT(R, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
-                   allocFn(R, H).
-NewRPT(FldR, H, FldTy) :- gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
-                          elemOf(FldPtrT, FldTy),  
-                          RegOrigin(SrcR, R), allocFn(R, H).
+RegPtsTo(R, H, TL) :- RegPtsTo(SrcR, H, TL), RegOrigin(R, SrcR).
+RegPtsTo(R, H, EmptyList) :- allocFn(R, H).
                    
-NewRPT(AccR, H, T) :- memAccess(T, AccR), RegOrigin(AccR, R),
-                      NewRPT(R, H, _).
+RegPtsTo(AccR, H, OTL) :- memAccess(T, AccR), RegOrigin(AccR, R),
+                          RegPtsTo(R, H, OTL), 
+                          firstPrimitiveTy(T, PTy),
+                          has_type(OTL, PTy).
 
-RegPtsTo(R, H, T) :- StripPtrCasts(R, Source, _), RegPtsTo(Source, H, T).
-RegPtsTo(R, H, T) :- alloca(T, R, H).
-RegPtsTo(R, H, "i8") :- malloc(_, R, _, H).
+RegPtsTo(AccR, cat(H, "'"), NTL) :- 
+                          memAccess(T, AccR), RegOrigin(AccR, R),
+                          RegPtsTo(R, H, OTL),
+                          firstPrimitiveTy(T, PTy),
+                          append_type(OTL, PTy, NTL).
 
-RegPtsTo(R, H, FT) :- RegPtsTo(R2, H, _),
-                      gep(PtrT, R, _, R2, _), elemOf(PtrT, FT).
+RegPtsTo(FldR, H, FTL) :- gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
+                          elemOf(FldPtrT, FldTy), 
+                          firstPrimitiveTy(FldTy, PrimFldTy),
+                          RegOrigin(SrcR, OrigR),
+                          RegPtsTo(OrigR, H, OTL),
+                          has_type(OTL, PrimFldTy),
+                          append_type(EmptyList, PrimFldTy, FTL).
 
-// One way - Andersen, two way - Steensgaard.
-RegPtsTo(R, H1, T1), RegPtsTo(R, H2, T2) :- 
-        RegPtsTo(R1, H1, T1), RegPtsTo(R2, H2, T2), phi(T, R, R1, R2).
+RegPtsTo(FldR, cat(H, "'"), FTL),
+RegPtsTo(OrigR, cat(H, "'"), NewTL) :- 
+                        gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
+                        elemOf(FldPtrT, FldTy), 
+                        firstPrimitiveTy(FldTy, PrimFldTy),
+                        RegOrigin(SrcR, OrigR),
+                        RegPtsTo(OrigR, H, OTL),
+                        append_type(OTL, PrimFldTy, NewTL),
+                        append_type(EmptyList, PrimFldTy, FTL).
+
+RegPtsTo(LdR, H2, FTL) :- load(PtrT, LdR, _, SrcR), isPtrTy(PtrT),
+                          firstPrimitiveTy(PtrT, PrimPtrT),
+                          RegPtsTo(SrcR, H1, _),
+                          FldPtsTo(H1, _, H2, _),
+                          append_type(EmptyList, PrimPtrT, FTL).
+
+FldPtsTo(H1, PrimDstPtrTy, H2, PrimValPtrTy) :- 
+                        store(ValPtrTy, Val, DstPtrTy, Dst),
+                        firstPrimitiveTy(ValPtrTy, PrimValPtrTy),
+                        firstPrimitiveTy(DstPtrTy, PrimDstPtrTy),
+                        RegPtsTo(Val, H2, _SrcTy),
+                        RegPtsTo(Dst, H1, _DstTy).
 
 
-RegPtsTo(R, H2, T) :- load(T, R, _, Source),
-                      RegPtsTo(Source, H1, _),
-                      FldPtsTo(H1, _, H2, _).
- 
-
-FldPtsTo(H1, DstPtrTy, H2, ValPtrTy) :- store(ValPtrTy, Val, DstPtrTy, Dst),
-                                        RegPtsTo(Val, H2, _SrcTy),
-                                        RegPtsTo(Dst, H1, _DstTy).
-
-
-// If H1 is collapsed, a pointer from any outgoing pointer goes to all destination fields.
-//FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H1), FldPtsTo(H1, _, H2, T2), 
-//                                            FldPtsTo(H1, T1, H2, _).
-
-// If H2 is collapsed, a pointer to H2 is a pointer to any (known) field of H2.
-//FldPtsTo(H1, T1, H2, T2) :- tCollapsed(H2), FldPtsTo(H1, T1, H2, _),
-//                                            FldPtsTo(_, _, H2, T2).
-
-//RegPtsTo(R, H, T2) :- tCollapsed(H), RegPtsTo(R, H, _T1), RegPtsTo(_R2, H, T2).
-
-//tCollapsed(H) :- FldPtsTo(H1, PtrT1, H, T1), FldPtsTo(H1, PtrT1, H, T2), T1 != T2.
-// tCollapsed(H) :- RegPtsTo(_, H, T1), RegPtsTo(_, H, T2), T1 != T2.
-//.output tCollapsed()
 
 // [Debug] Dump tables.
 //.output sizeOf()
@@ -190,9 +190,7 @@ FldPtsTo(H1, DstPtrTy, H2, ValPtrTy) :- store(ValPtrTy, Val, DstPtrTy, Dst),
 //.output typeAtOffset()
 .output heapField()
 .output RegOrigin() 
-.output StripPtrCasts()
-//.output RegPtsTo()
-.output NewRPT()
+.output RegPtsTo()
 .output memAccess()
 .output FldPtsTo()
 .output HeapPtsTo()
