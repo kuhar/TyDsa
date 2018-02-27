@@ -28,8 +28,6 @@ sizeOf(PtrT, 8) :- isPtrTy(PtrT).
 .decl field(class:type, ty:type, index:num)
 
 .decl has_type(ty_list:list, ty:type)
-has_type(L, T) :- contains(type, list).
-
 .decl append_type(in_list:list, ty:type, out_list:list)
 
 
@@ -84,8 +82,8 @@ isPrimitive(T) :- sizeOf(T, _), !class(T, _).
 innerPrimitiveTy(T, InnT) :- typeAtOffset(T, InnT, _), 
                              isPrimitive(InnT).
 
-.decl heapTypes(h:heap, tys:type_list)
-.output heapTypes()
+//.decl heapTypes(h:heap, tys:type_list)
+//.output heapTypes()
 
 .decl heapField(h:heap, fld_ty:type)
 .decl allocFn(r:reg, h:heap)

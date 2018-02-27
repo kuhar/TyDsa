@@ -16,8 +16,8 @@ class Type:
 
     def dump(self):
         print('sizeOf(\"' + self.name + '\", ' + str(self.size) + ').')
-        print('ptrOf(\"' + self.name + '\", ' + self.name + '*\").')
-        print('ptrOf(\"' + self.name + '*\", ' + self.name + '**\").')
+        print('ptrOf(\"' + self.name + '\", \"' + self.name + '*\").')
+        print('ptrOf(\"' + self.name + '*\", \"' + self.name + '**\").')
 
     def is_primitive(self):
         return True
@@ -46,25 +46,22 @@ def powerset(xs):
     return chain.from_iterable(combinations(xs, n) for n in range(len(xs)))
 
 def to_ty_list(x):
-    res = "{"
-    for t in x:
-        res += t.name + ' '
-    res += "}"
-    return res
+    names = [t.name for t in x]
+    return '{' + ' '.join(names) + '}'
 
 
 i8 = Type("i8", 1)
-i16 = Type("short", 2)
-i32 = Type("int", 4)
-f32 = Type("float", 4)
+Ty1 = Type("Ty1", 4)
+Ty2 = Type("Ty2", 2)
+Ty3 = Type("Ty3", 12)
 
-Foo = Struct("Foo", [i16, i32, i16.add_ptr()])
-Bar = Struct("Bar", [i16.add_ptr(), i32.add_ptr(), f32.add_ptr()])
-Baz = Struct("Baz", [i16.add_ptr(), i16, i16.add_ptr()])
-Bam = Struct("Bam", [f32.add_ptr(), Foo, i16])
+Foo = Struct("Foo", [Ty1, Ty2, Ty1.add_ptr()])
+Bar = Struct("Bar", [Ty1.add_ptr(), Ty2.add_ptr(), Ty3.add_ptr()])
+Baz = Struct("Baz", [Ty1.add_ptr(), Ty1, Ty1.add_ptr()])
+Bam = Struct("Bam", [Ty3.add_ptr(), Foo, Ty1])
 
-primitive_types = [i8, i16, i32, f32]
-types = [i8, i16, i32, f32, Foo, Bar, Baz, Bam]
+primitive_types = [i8, Ty1, Ty2, Ty3]
+types = [i8, Ty1, Ty2, Ty3, Foo, Bar, Baz, Bam]
 
 for t in types:
     t.dump()
@@ -75,13 +72,16 @@ all_types = []
 for t in primitive_types:
     all_types.append(t)
     all_types.append(t.add_ptr())
-    all_types.append(t.add_ptr().add_ptr())
 
 ps = set(powerset(all_types))
 for p in ps:
-    for t in primitive_types:
+    for t in all_types:
+        sorter = lambda ty: ty.name
+        tys = sorted(p, key=sorter)
         if t not in p:
-            print('append_type(\"' + to_ty_list(p) + '\", \"' + t.name + '\", \"' + to_ty_list(p + (t, )) + '\").')
-
+            with_t = sorted(p + (t, ), key=sorter)
+            print('append_type(\"' + to_ty_list(tys) + '\", \"' + t.name + '\", \"' + to_ty_list(with_t) + '\").')
+        else:
+            print('has_type(\"' + to_ty_list(tys) + '\", \"' + t.name + '\").')
 
 

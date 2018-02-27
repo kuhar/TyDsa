@@ -1,41 +1,2088 @@
+sizeOf("i8", 1).
 ptrOf("i8", "i8*").
-ptrOf("Ty1", "Ty1*").
-ptrOf("Ty2", "Ty2*").
-ptrOf("Ty3", "Ty3*").
 ptrOf("i8*", "i8**").
+
+sizeOf("Ty1", 4).
+ptrOf("Ty1", "Ty1*").
 ptrOf("Ty1*", "Ty1**").
+
+sizeOf("Ty2", 2).
+ptrOf("Ty2", "Ty2*").
 ptrOf("Ty2*", "Ty2**").
+
+sizeOf("Ty3", 12).
+ptrOf("Ty3", "Ty3*").
 ptrOf("Ty3*", "Ty3**").
 
-sizeOf("i8", 1).
-sizeOf("Ty1", 4).
-sizeOf("Ty2", 2).
-sizeOf("Ty3", 12).
-
-class("Foo", 3).
+sizeOf("Foo", 14).
 ptrOf("Foo", "Foo*").
 ptrOf("Foo*", "Foo**").
+class("Foo", 3).
 field("Foo", "Ty1", 0).
 field("Foo", "Ty2", 1).
 field("Foo", "Ty1*", 2).
 
-class("Bar", 3).
+sizeOf("Bar", 24).
 ptrOf("Bar", "Bar*").
 ptrOf("Bar*", "Bar**").
+class("Bar", 3).
 field("Bar", "Ty1*", 0).
 field("Bar", "Ty2*", 1).
 field("Bar", "Ty3*", 2).
 
-class("Baz", 3).
+sizeOf("Baz", 20).
 ptrOf("Baz", "Baz*").
 ptrOf("Baz*", "Baz**").
+class("Baz", 3).
 field("Baz", "Ty1*", 0).
 field("Baz", "Ty1", 1).
 field("Baz", "Ty1*", 2).
 
-class("B", 3).
-ptrOf("B", "B*").
-ptrOf("B*", "B**").
-field("B", "Ty3*", 0).
-field("B", "Foo", 1).
-field("B", "Ty1", 2).
+sizeOf("Bam", 26).
+ptrOf("Bam", "Bam*").
+ptrOf("Bam*", "Bam**").
+class("Bam", 3).
+field("Bam", "Ty3*", 0).
+field("Bam", "Foo", 1).
+field("Bam", "Ty1", 2).
+
+append_type("{Ty1 Ty2* i8*}", "i8", "{Ty1 Ty2* i8 i8*}").
+has_type("{Ty1 Ty2* i8*}", "i8*").
+has_type("{Ty1 Ty2* i8*}", "Ty1").
+append_type("{Ty1 Ty2* i8*}", "Ty1*", "{Ty1 Ty1* Ty2* i8*}").
+append_type("{Ty1 Ty2* i8*}", "Ty2", "{Ty1 Ty2 Ty2* i8*}").
+has_type("{Ty1 Ty2* i8*}", "Ty2*").
+append_type("{Ty1 Ty2* i8*}", "Ty3", "{Ty1 Ty2* Ty3 i8*}").
+append_type("{Ty1 Ty2* i8*}", "Ty3*", "{Ty1 Ty2* Ty3* i8*}").
+append_type("{Ty1* Ty2* Ty3}", "i8", "{Ty1* Ty2* Ty3 i8}").
+append_type("{Ty1* Ty2* Ty3}", "i8*", "{Ty1* Ty2* Ty3 i8*}").
+append_type("{Ty1* Ty2* Ty3}", "Ty1", "{Ty1 Ty1* Ty2* Ty3}").
+has_type("{Ty1* Ty2* Ty3}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3}", "Ty2", "{Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty1* Ty2* Ty3}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3}", "Ty3").
+append_type("{Ty1* Ty2* Ty3}", "Ty3*", "{Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty2* Ty3* i8}", "i8").
+append_type("{Ty1 Ty2* Ty3* i8}", "i8*", "{Ty1 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty2* Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3* i8}").
+append_type("{Ty1 Ty2* Ty3* i8}", "Ty2", "{Ty1 Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1 Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty1 Ty2* Ty3* i8}", "Ty3", "{Ty1 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2* Ty3* i8}", "Ty3*").
+append_type("{Ty1* Ty2*}", "i8", "{Ty1* Ty2* i8}").
+append_type("{Ty1* Ty2*}", "i8*", "{Ty1* Ty2* i8*}").
+append_type("{Ty1* Ty2*}", "Ty1", "{Ty1 Ty1* Ty2*}").
+has_type("{Ty1* Ty2*}", "Ty1*").
+append_type("{Ty1* Ty2*}", "Ty2", "{Ty1* Ty2 Ty2*}").
+has_type("{Ty1* Ty2*}", "Ty2*").
+append_type("{Ty1* Ty2*}", "Ty3", "{Ty1* Ty2* Ty3}").
+append_type("{Ty1* Ty2*}", "Ty3*", "{Ty1* Ty2* Ty3*}").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "i8", "{Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty2* Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2* Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty2* Ty3* i8 i8*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty2* Ty3* i8 i8*}", "Ty3", "{Ty1 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty2 Ty3 i8*}", "i8", "{Ty1 Ty2 Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty3 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 i8*}").
+has_type("{Ty1 Ty2 Ty3 i8*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 i8*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty2 Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty2 Ty3 i8*}", "Ty3*", "{Ty1 Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "i8", "{Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "i8", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "i8*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3*}", "Ty3*").
+has_type("{Ty1 Ty1* i8}", "i8").
+append_type("{Ty1 Ty1* i8}", "i8*", "{Ty1 Ty1* i8 i8*}").
+has_type("{Ty1 Ty1* i8}", "Ty1").
+has_type("{Ty1 Ty1* i8}", "Ty1*").
+append_type("{Ty1 Ty1* i8}", "Ty2", "{Ty1 Ty1* Ty2 i8}").
+append_type("{Ty1 Ty1* i8}", "Ty2*", "{Ty1 Ty1* Ty2* i8}").
+append_type("{Ty1 Ty1* i8}", "Ty3", "{Ty1 Ty1* Ty3 i8}").
+append_type("{Ty1 Ty1* i8}", "Ty3*", "{Ty1 Ty1* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "i8", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "i8*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "i8", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty2 Ty3* i8}", "i8").
+append_type("{Ty1 Ty2 Ty3* i8}", "i8*", "{Ty1 Ty2 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty3* i8}", "Ty2").
+append_type("{Ty1 Ty2 Ty3* i8}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1 Ty2 Ty3* i8}", "Ty3", "{Ty1 Ty2 Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8}", "i8*", "{Ty1 Ty1* Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 i8 i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* i8 i8*}").
+append_type("{Ty1 Ty1* Ty2 i8 i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 i8 i8*}").
+append_type("{Ty1 Ty1* Ty2 i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "i8", "{Ty1 Ty1* Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8*}", "Ty3*").
+has_type("{Ty3* i8 i8*}", "i8").
+has_type("{Ty3* i8 i8*}", "i8*").
+append_type("{Ty3* i8 i8*}", "Ty1", "{Ty1 Ty3* i8 i8*}").
+append_type("{Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty3* i8 i8*}").
+append_type("{Ty3* i8 i8*}", "Ty2", "{Ty2 Ty3* i8 i8*}").
+append_type("{Ty3* i8 i8*}", "Ty2*", "{Ty2* Ty3* i8 i8*}").
+append_type("{Ty3* i8 i8*}", "Ty3", "{Ty3 Ty3* i8 i8*}").
+has_type("{Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "i8*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty1* Ty2* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8}", "i8").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8}", "i8*", "{Ty1 Ty1* Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 i8 i8*}", "i8").
+has_type("{Ty1 i8 i8*}", "i8*").
+has_type("{Ty1 i8 i8*}", "Ty1").
+append_type("{Ty1 i8 i8*}", "Ty1*", "{Ty1 Ty1* i8 i8*}").
+append_type("{Ty1 i8 i8*}", "Ty2", "{Ty1 Ty2 i8 i8*}").
+append_type("{Ty1 i8 i8*}", "Ty2*", "{Ty1 Ty2* i8 i8*}").
+append_type("{Ty1 i8 i8*}", "Ty3", "{Ty1 Ty3 i8 i8*}").
+append_type("{Ty1 i8 i8*}", "Ty3*", "{Ty1 Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3* i8}", "i8").
+append_type("{Ty2 Ty2* Ty3* i8}", "i8*", "{Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty2 Ty2* Ty3* i8}", "Ty1", "{Ty1 Ty2 Ty2* Ty3* i8}").
+append_type("{Ty2 Ty2* Ty3* i8}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3* i8}").
+has_type("{Ty2 Ty2* Ty3* i8}", "Ty2").
+has_type("{Ty2 Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty2 Ty2* Ty3* i8}", "Ty3", "{Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty2 Ty2* Ty3* i8}", "Ty3*").
+has_type("{Ty3 i8}", "i8").
+append_type("{Ty3 i8}", "i8*", "{Ty3 i8 i8*}").
+append_type("{Ty3 i8}", "Ty1", "{Ty1 Ty3 i8}").
+append_type("{Ty3 i8}", "Ty1*", "{Ty1* Ty3 i8}").
+append_type("{Ty3 i8}", "Ty2", "{Ty2 Ty3 i8}").
+append_type("{Ty3 i8}", "Ty2*", "{Ty2* Ty3 i8}").
+has_type("{Ty3 i8}", "Ty3").
+append_type("{Ty3 i8}", "Ty3*", "{Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "i8*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1* Ty3 i8}", "i8").
+append_type("{Ty1* Ty3 i8}", "i8*", "{Ty1* Ty3 i8 i8*}").
+append_type("{Ty1* Ty3 i8}", "Ty1", "{Ty1 Ty1* Ty3 i8}").
+has_type("{Ty1* Ty3 i8}", "Ty1*").
+append_type("{Ty1* Ty3 i8}", "Ty2", "{Ty1* Ty2 Ty3 i8}").
+append_type("{Ty1* Ty3 i8}", "Ty2*", "{Ty1* Ty2* Ty3 i8}").
+has_type("{Ty1* Ty3 i8}", "Ty3").
+append_type("{Ty1* Ty3 i8}", "Ty3*", "{Ty1* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8}", "i8").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8}", "i8*", "{Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "i8", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "i8*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1* Ty2}", "i8", "{Ty1* Ty2 i8}").
+append_type("{Ty1* Ty2}", "i8*", "{Ty1* Ty2 i8*}").
+append_type("{Ty1* Ty2}", "Ty1", "{Ty1 Ty1* Ty2}").
+has_type("{Ty1* Ty2}", "Ty1*").
+has_type("{Ty1* Ty2}", "Ty2").
+append_type("{Ty1* Ty2}", "Ty2*", "{Ty1* Ty2 Ty2*}").
+append_type("{Ty1* Ty2}", "Ty3", "{Ty1* Ty2 Ty3}").
+append_type("{Ty1* Ty2}", "Ty3*", "{Ty1* Ty2 Ty3*}").
+has_type("{Ty1 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty3* i8 i8*}").
+append_type("{Ty1 Ty3* i8 i8*}", "Ty2", "{Ty1 Ty2 Ty3* i8 i8*}").
+append_type("{Ty1 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty3* i8 i8*}", "Ty3", "{Ty1 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2*}", "i8", "{Ty1 Ty1* Ty2* i8}").
+append_type("{Ty1 Ty1* Ty2*}", "i8*", "{Ty1 Ty1* Ty2* i8*}").
+has_type("{Ty1 Ty1* Ty2*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2*}").
+has_type("{Ty1 Ty1* Ty2*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2*}", "Ty3", "{Ty1 Ty1* Ty2* Ty3}").
+append_type("{Ty1 Ty1* Ty2*}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3*}").
+has_type("{Ty2* Ty3* i8}", "i8").
+append_type("{Ty2* Ty3* i8}", "i8*", "{Ty2* Ty3* i8 i8*}").
+append_type("{Ty2* Ty3* i8}", "Ty1", "{Ty1 Ty2* Ty3* i8}").
+append_type("{Ty2* Ty3* i8}", "Ty1*", "{Ty1* Ty2* Ty3* i8}").
+append_type("{Ty2* Ty3* i8}", "Ty2", "{Ty2 Ty2* Ty3* i8}").
+has_type("{Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty2* Ty3* i8}", "Ty3", "{Ty2* Ty3 Ty3* i8}").
+has_type("{Ty2* Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8}", "i8").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8}", "i8*", "{Ty1 Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty2 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty2 Ty3* i8 i8*}", "Ty3", "{Ty1 Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3* i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty3* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3* i8}", "i8").
+append_type("{Ty1* Ty2* Ty3* i8}", "i8*", "{Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty1* Ty2* Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty2* Ty3* i8}").
+has_type("{Ty1* Ty2* Ty3* i8}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3* i8}", "Ty2", "{Ty1* Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1* Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty1* Ty2* Ty3* i8}", "Ty3", "{Ty1* Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2* Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty2 Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty3 i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 i8 i8*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 i8 i8*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty2 Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* i8 i8*}", "i8").
+has_type("{Ty1 Ty2* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2* i8 i8*}").
+append_type("{Ty1 Ty2* i8 i8*}", "Ty2", "{Ty1 Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty2* i8 i8*}", "Ty3", "{Ty1 Ty2* Ty3 i8 i8*}").
+append_type("{Ty1 Ty2* i8 i8*}", "Ty3*", "{Ty1 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 i8}", "i8").
+append_type("{Ty1* Ty2 i8}", "i8*", "{Ty1* Ty2 i8 i8*}").
+append_type("{Ty1* Ty2 i8}", "Ty1", "{Ty1 Ty1* Ty2 i8}").
+has_type("{Ty1* Ty2 i8}", "Ty1*").
+has_type("{Ty1* Ty2 i8}", "Ty2").
+append_type("{Ty1* Ty2 i8}", "Ty2*", "{Ty1* Ty2 Ty2* i8}").
+append_type("{Ty1* Ty2 i8}", "Ty3", "{Ty1* Ty2 Ty3 i8}").
+append_type("{Ty1* Ty2 i8}", "Ty3*", "{Ty1* Ty2 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty3 i8*}", "i8", "{Ty1 Ty3 i8 i8*}").
+has_type("{Ty1 Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty3 i8*}", "Ty1").
+append_type("{Ty1 Ty3 i8*}", "Ty1*", "{Ty1 Ty1* Ty3 i8*}").
+append_type("{Ty1 Ty3 i8*}", "Ty2", "{Ty1 Ty2 Ty3 i8*}").
+append_type("{Ty1 Ty3 i8*}", "Ty2*", "{Ty1 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty3 i8*}", "Ty3*", "{Ty1 Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty3* i8}", "i8").
+append_type("{Ty2 Ty3* i8}", "i8*", "{Ty2 Ty3* i8 i8*}").
+append_type("{Ty2 Ty3* i8}", "Ty1", "{Ty1 Ty2 Ty3* i8}").
+append_type("{Ty2 Ty3* i8}", "Ty1*", "{Ty1* Ty2 Ty3* i8}").
+has_type("{Ty2 Ty3* i8}", "Ty2").
+append_type("{Ty2 Ty3* i8}", "Ty2*", "{Ty2 Ty2* Ty3* i8}").
+append_type("{Ty2 Ty3* i8}", "Ty3", "{Ty2 Ty3 Ty3* i8}").
+has_type("{Ty2 Ty3* i8}", "Ty3*").
+has_type("{Ty3* i8}", "i8").
+append_type("{Ty3* i8}", "i8*", "{Ty3* i8 i8*}").
+append_type("{Ty3* i8}", "Ty1", "{Ty1 Ty3* i8}").
+append_type("{Ty3* i8}", "Ty1*", "{Ty1* Ty3* i8}").
+append_type("{Ty3* i8}", "Ty2", "{Ty2 Ty3* i8}").
+append_type("{Ty3* i8}", "Ty2*", "{Ty2* Ty3* i8}").
+append_type("{Ty3* i8}", "Ty3", "{Ty3 Ty3* i8}").
+has_type("{Ty3* i8}", "Ty3*").
+append_type("{Ty1 Ty1* Ty3*}", "i8", "{Ty1 Ty1* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty3*}", "i8*", "{Ty1 Ty1* Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3*}").
+append_type("{Ty1 Ty1* Ty3*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3*}").
+append_type("{Ty1 Ty1* Ty3*}", "Ty3", "{Ty1 Ty1* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty3*}", "Ty3*").
+append_type("{Ty1* Ty2 Ty2* i8*}", "i8", "{Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* i8*}").
+has_type("{Ty1* Ty2 Ty2* i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* i8*}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* i8*}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty1* Ty2 Ty2* i8*}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1* Ty3 i8*}", "i8", "{Ty1* Ty3 i8 i8*}").
+has_type("{Ty1* Ty3 i8*}", "i8*").
+append_type("{Ty1* Ty3 i8*}", "Ty1", "{Ty1 Ty1* Ty3 i8*}").
+has_type("{Ty1* Ty3 i8*}", "Ty1*").
+append_type("{Ty1* Ty3 i8*}", "Ty2", "{Ty1* Ty2 Ty3 i8*}").
+append_type("{Ty1* Ty3 i8*}", "Ty2*", "{Ty1* Ty2* Ty3 i8*}").
+has_type("{Ty1* Ty3 i8*}", "Ty3").
+append_type("{Ty1* Ty3 i8*}", "Ty3*", "{Ty1* Ty3 Ty3* i8*}").
+append_type("{Ty2* Ty3 i8*}", "i8", "{Ty2* Ty3 i8 i8*}").
+has_type("{Ty2* Ty3 i8*}", "i8*").
+append_type("{Ty2* Ty3 i8*}", "Ty1", "{Ty1 Ty2* Ty3 i8*}").
+append_type("{Ty2* Ty3 i8*}", "Ty1*", "{Ty1* Ty2* Ty3 i8*}").
+append_type("{Ty2* Ty3 i8*}", "Ty2", "{Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty2* Ty3 i8*}", "Ty3*", "{Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty3}", "i8", "{Ty1 Ty1* Ty3 i8}").
+append_type("{Ty1 Ty1* Ty3}", "i8*", "{Ty1 Ty1* Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty3}", "Ty1").
+has_type("{Ty1 Ty1* Ty3}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3}", "Ty2", "{Ty1 Ty1* Ty2 Ty3}").
+append_type("{Ty1 Ty1* Ty3}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3}").
+has_type("{Ty1 Ty1* Ty3}", "Ty3").
+append_type("{Ty1 Ty1* Ty3}", "Ty3*", "{Ty1 Ty1* Ty3 Ty3*}").
+append_type("{Ty1 Ty2* Ty3}", "i8", "{Ty1 Ty2* Ty3 i8}").
+append_type("{Ty1 Ty2* Ty3}", "i8*", "{Ty1 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty2* Ty3}", "Ty1").
+append_type("{Ty1 Ty2* Ty3}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3}").
+append_type("{Ty1 Ty2* Ty3}", "Ty2", "{Ty1 Ty2 Ty2* Ty3}").
+has_type("{Ty1 Ty2* Ty3}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3}", "Ty3").
+append_type("{Ty1 Ty2* Ty3}", "Ty3*", "{Ty1 Ty2* Ty3 Ty3*}").
+append_type("{Ty1* Ty2 Ty2* Ty3*}", "i8", "{Ty1* Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1* Ty2 Ty2* Ty3*}", "i8*", "{Ty1* Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty1* Ty2 Ty2* Ty3*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3*}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* Ty3*}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2 Ty2* Ty3*}", "Ty3*").
+has_type("{Ty2 Ty3 Ty3* i8}", "i8").
+append_type("{Ty2 Ty3 Ty3* i8}", "i8*", "{Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty2 Ty3 Ty3* i8}").
+append_type("{Ty2 Ty3 Ty3* i8}", "Ty1*", "{Ty1* Ty2 Ty3 Ty3* i8}").
+has_type("{Ty2 Ty3 Ty3* i8}", "Ty2").
+append_type("{Ty2 Ty3 Ty3* i8}", "Ty2*", "{Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty2 Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty2 Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty2* Ty3* i8*}", "i8", "{Ty2* Ty3* i8 i8*}").
+has_type("{Ty2* Ty3* i8*}", "i8*").
+append_type("{Ty2* Ty3* i8*}", "Ty1", "{Ty1 Ty2* Ty3* i8*}").
+append_type("{Ty2* Ty3* i8*}", "Ty1*", "{Ty1* Ty2* Ty3* i8*}").
+append_type("{Ty2* Ty3* i8*}", "Ty2", "{Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty2* Ty3* i8*}", "Ty3", "{Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2* Ty3* i8*}", "Ty3*").
+append_type("{Ty2 Ty3*}", "i8", "{Ty2 Ty3* i8}").
+append_type("{Ty2 Ty3*}", "i8*", "{Ty2 Ty3* i8*}").
+append_type("{Ty2 Ty3*}", "Ty1", "{Ty1 Ty2 Ty3*}").
+append_type("{Ty2 Ty3*}", "Ty1*", "{Ty1* Ty2 Ty3*}").
+has_type("{Ty2 Ty3*}", "Ty2").
+append_type("{Ty2 Ty3*}", "Ty2*", "{Ty2 Ty2* Ty3*}").
+append_type("{Ty2 Ty3*}", "Ty3", "{Ty2 Ty3 Ty3*}").
+has_type("{Ty2 Ty3*}", "Ty3*").
+append_type("{Ty1 Ty2* Ty3* i8*}", "i8", "{Ty1 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty2* Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3* i8*}").
+append_type("{Ty1 Ty2* Ty3* i8*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty1 Ty2* Ty3* i8*}", "Ty3", "{Ty1 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2* Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty2* Ty3*}", "i8", "{Ty1 Ty2* Ty3* i8}").
+append_type("{Ty1 Ty2* Ty3*}", "i8*", "{Ty1 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty2* Ty3*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3*}").
+append_type("{Ty1 Ty2* Ty3*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3*}").
+has_type("{Ty1 Ty2* Ty3*}", "Ty2*").
+append_type("{Ty1 Ty2* Ty3*}", "Ty3", "{Ty1 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty2* Ty3*}", "Ty3*").
+has_type("{Ty1 Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty3 Ty3* i8}", "i8*", "{Ty1 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3 Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty3 Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty3 Ty3* i8}", "Ty2", "{Ty1 Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty3 Ty3* i8}", "Ty2*", "{Ty1 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty2* i8}", "i8").
+append_type("{Ty1 Ty2* i8}", "i8*", "{Ty1 Ty2* i8 i8*}").
+has_type("{Ty1 Ty2* i8}", "Ty1").
+append_type("{Ty1 Ty2* i8}", "Ty1*", "{Ty1 Ty1* Ty2* i8}").
+append_type("{Ty1 Ty2* i8}", "Ty2", "{Ty1 Ty2 Ty2* i8}").
+has_type("{Ty1 Ty2* i8}", "Ty2*").
+append_type("{Ty1 Ty2* i8}", "Ty3", "{Ty1 Ty2* Ty3 i8}").
+append_type("{Ty1 Ty2* i8}", "Ty3*", "{Ty1 Ty2* Ty3* i8}").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty2 i8*}", "i8", "{Ty1 Ty2 i8 i8*}").
+has_type("{Ty1 Ty2 i8*}", "i8*").
+has_type("{Ty1 Ty2 i8*}", "Ty1").
+append_type("{Ty1 Ty2 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 i8*}").
+has_type("{Ty1 Ty2 i8*}", "Ty2").
+append_type("{Ty1 Ty2 i8*}", "Ty2*", "{Ty1 Ty2 Ty2* i8*}").
+append_type("{Ty1 Ty2 i8*}", "Ty3", "{Ty1 Ty2 Ty3 i8*}").
+append_type("{Ty1 Ty2 i8*}", "Ty3*", "{Ty1 Ty2 Ty3* i8*}").
+has_type("{Ty2 Ty2* i8}", "i8").
+append_type("{Ty2 Ty2* i8}", "i8*", "{Ty2 Ty2* i8 i8*}").
+append_type("{Ty2 Ty2* i8}", "Ty1", "{Ty1 Ty2 Ty2* i8}").
+append_type("{Ty2 Ty2* i8}", "Ty1*", "{Ty1* Ty2 Ty2* i8}").
+has_type("{Ty2 Ty2* i8}", "Ty2").
+has_type("{Ty2 Ty2* i8}", "Ty2*").
+append_type("{Ty2 Ty2* i8}", "Ty3", "{Ty2 Ty2* Ty3 i8}").
+append_type("{Ty2 Ty2* i8}", "Ty3*", "{Ty2 Ty2* Ty3* i8}").
+has_type("{Ty3 Ty3* i8}", "i8").
+append_type("{Ty3 Ty3* i8}", "i8*", "{Ty3 Ty3* i8 i8*}").
+append_type("{Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty3 Ty3* i8}").
+append_type("{Ty3 Ty3* i8}", "Ty1*", "{Ty1* Ty3 Ty3* i8}").
+append_type("{Ty3 Ty3* i8}", "Ty2", "{Ty2 Ty3 Ty3* i8}").
+append_type("{Ty3 Ty3* i8}", "Ty2*", "{Ty2* Ty3 Ty3* i8}").
+has_type("{Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "i8", "{Ty1 Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8*}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8}", "i8*", "{Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty2 Ty3* i8 i8*}", "i8").
+has_type("{Ty2 Ty3* i8 i8*}", "i8*").
+append_type("{Ty2 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty2 Ty3* i8 i8*}").
+append_type("{Ty2 Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty2 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty2 Ty3* i8 i8*}", "Ty2*", "{Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty2 Ty3* i8 i8*}", "Ty3", "{Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1* Ty2 Ty3 Ty3*}", "i8", "{Ty1* Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1* Ty2 Ty3 Ty3*}", "i8*", "{Ty1* Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty2 Ty3 Ty3*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 Ty3*}").
+has_type("{Ty1* Ty2 Ty3 Ty3*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 Ty3*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 Ty3*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2 Ty3 Ty3*}", "Ty3").
+has_type("{Ty1* Ty2 Ty3 Ty3*}", "Ty3*").
+append_type("{Ty2 Ty3 Ty3*}", "i8", "{Ty2 Ty3 Ty3* i8}").
+append_type("{Ty2 Ty3 Ty3*}", "i8*", "{Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty2 Ty3 Ty3*}", "Ty1", "{Ty1 Ty2 Ty3 Ty3*}").
+append_type("{Ty2 Ty3 Ty3*}", "Ty1*", "{Ty1* Ty2 Ty3 Ty3*}").
+has_type("{Ty2 Ty3 Ty3*}", "Ty2").
+append_type("{Ty2 Ty3 Ty3*}", "Ty2*", "{Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty2 Ty3 Ty3*}", "Ty3").
+has_type("{Ty2 Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1* Ty2* i8*}", "i8", "{Ty1* Ty2* i8 i8*}").
+has_type("{Ty1* Ty2* i8*}", "i8*").
+append_type("{Ty1* Ty2* i8*}", "Ty1", "{Ty1 Ty1* Ty2* i8*}").
+has_type("{Ty1* Ty2* i8*}", "Ty1*").
+append_type("{Ty1* Ty2* i8*}", "Ty2", "{Ty1* Ty2 Ty2* i8*}").
+has_type("{Ty1* Ty2* i8*}", "Ty2*").
+append_type("{Ty1* Ty2* i8*}", "Ty3", "{Ty1* Ty2* Ty3 i8*}").
+append_type("{Ty1* Ty2* i8*}", "Ty3*", "{Ty1* Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8}", "i8*", "{Ty1 Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty3 i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 i8 i8*}").
+append_type("{Ty1 Ty1* Ty3 i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty3}", "i8", "{Ty1 Ty3 i8}").
+append_type("{Ty1 Ty3}", "i8*", "{Ty1 Ty3 i8*}").
+has_type("{Ty1 Ty3}", "Ty1").
+append_type("{Ty1 Ty3}", "Ty1*", "{Ty1 Ty1* Ty3}").
+append_type("{Ty1 Ty3}", "Ty2", "{Ty1 Ty2 Ty3}").
+append_type("{Ty1 Ty3}", "Ty2*", "{Ty1 Ty2* Ty3}").
+has_type("{Ty1 Ty3}", "Ty3").
+append_type("{Ty1 Ty3}", "Ty3*", "{Ty1 Ty3 Ty3*}").
+append_type("{Ty1* Ty3 Ty3* i8*}", "i8", "{Ty1* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty3 Ty3* i8*}", "Ty1*").
+append_type("{Ty1* Ty3 Ty3* i8*}", "Ty2", "{Ty1* Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty3 Ty3* i8*}", "Ty2*", "{Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1* Ty3 Ty3* i8*}", "Ty3*").
+append_type("{Ty2 Ty3}", "i8", "{Ty2 Ty3 i8}").
+append_type("{Ty2 Ty3}", "i8*", "{Ty2 Ty3 i8*}").
+append_type("{Ty2 Ty3}", "Ty1", "{Ty1 Ty2 Ty3}").
+append_type("{Ty2 Ty3}", "Ty1*", "{Ty1* Ty2 Ty3}").
+has_type("{Ty2 Ty3}", "Ty2").
+append_type("{Ty2 Ty3}", "Ty2*", "{Ty2 Ty2* Ty3}").
+has_type("{Ty2 Ty3}", "Ty3").
+append_type("{Ty2 Ty3}", "Ty3*", "{Ty2 Ty3 Ty3*}").
+append_type("{Ty1 Ty1* Ty2 Ty2*}", "i8", "{Ty1 Ty1* Ty2 Ty2* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2*}", "i8*", "{Ty1 Ty1* Ty2 Ty2* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2*}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3}").
+append_type("{Ty1 Ty1* Ty2 Ty2*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty2 Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty2 Ty2* Ty3* i8 i8*}", "i8*").
+append_type("{Ty2 Ty2* Ty3* i8 i8*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty2 Ty2* Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3* i8 i8*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty2 Ty2* Ty3* i8 i8*}", "Ty3", "{Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 i8*}", "i8", "{Ty1 i8 i8*}").
+has_type("{Ty1 i8*}", "i8*").
+has_type("{Ty1 i8*}", "Ty1").
+append_type("{Ty1 i8*}", "Ty1*", "{Ty1 Ty1* i8*}").
+append_type("{Ty1 i8*}", "Ty2", "{Ty1 Ty2 i8*}").
+append_type("{Ty1 i8*}", "Ty2*", "{Ty1 Ty2* i8*}").
+append_type("{Ty1 i8*}", "Ty3", "{Ty1 Ty3 i8*}").
+append_type("{Ty1 i8*}", "Ty3*", "{Ty1 Ty3* i8*}").
+has_type("{Ty1* Ty3 i8 i8*}", "i8").
+has_type("{Ty1* Ty3 i8 i8*}", "i8*").
+append_type("{Ty1* Ty3 i8 i8*}", "Ty1", "{Ty1 Ty1* Ty3 i8 i8*}").
+has_type("{Ty1* Ty3 i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty3 i8 i8*}", "Ty2", "{Ty1* Ty2 Ty3 i8 i8*}").
+append_type("{Ty1* Ty3 i8 i8*}", "Ty2*", "{Ty1* Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1* Ty3 i8 i8*}", "Ty3*", "{Ty1* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty2* Ty3 Ty3*}", "i8", "{Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty2 Ty2* Ty3 Ty3*}", "i8*", "{Ty2 Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty2 Ty2* Ty3 Ty3*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 Ty3*}").
+append_type("{Ty2 Ty2* Ty3 Ty3*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty2 Ty2* Ty3 Ty3*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty2 Ty2* Ty3 Ty3*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "i8", "{Ty1 Ty1* Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty2* Ty3 i8*}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty3 Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty3 Ty3* i8 i8*}", "Ty2", "{Ty1 Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "i8*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8}", "Ty3*").
+has_type("{i8}", "i8").
+append_type("{i8}", "i8*", "{i8 i8*}").
+append_type("{i8}", "Ty1", "{Ty1 i8}").
+append_type("{i8}", "Ty1*", "{Ty1* i8}").
+append_type("{i8}", "Ty2", "{Ty2 i8}").
+append_type("{i8}", "Ty2*", "{Ty2* i8}").
+append_type("{i8}", "Ty3", "{Ty3 i8}").
+append_type("{i8}", "Ty3*", "{Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty3*}", "i8", "{Ty1 Ty1* Ty2 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty3*}", "i8*", "{Ty1 Ty1* Ty2 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3*}").
+append_type("{Ty1 Ty1* Ty2 Ty3*}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty2 Ty3*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8}", "i8*", "{Ty1 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "i8", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty3 i8 i8*}", "Ty1").
+append_type("{Ty1 Ty3 i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty3 i8 i8*}").
+append_type("{Ty1 Ty3 i8 i8*}", "Ty2", "{Ty1 Ty2 Ty3 i8 i8*}").
+append_type("{Ty1 Ty3 i8 i8*}", "Ty2*", "{Ty1 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3* i8}", "i8").
+append_type("{Ty1 Ty3* i8}", "i8*", "{Ty1 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty3* i8}").
+append_type("{Ty1 Ty3* i8}", "Ty2", "{Ty1 Ty2 Ty3* i8}").
+append_type("{Ty1 Ty3* i8}", "Ty2*", "{Ty1 Ty2* Ty3* i8}").
+append_type("{Ty1 Ty3* i8}", "Ty3", "{Ty1 Ty3 Ty3* i8}").
+has_type("{Ty1 Ty3* i8}", "Ty3*").
+append_type("{Ty2* Ty3}", "i8", "{Ty2* Ty3 i8}").
+append_type("{Ty2* Ty3}", "i8*", "{Ty2* Ty3 i8*}").
+append_type("{Ty2* Ty3}", "Ty1", "{Ty1 Ty2* Ty3}").
+append_type("{Ty2* Ty3}", "Ty1*", "{Ty1* Ty2* Ty3}").
+append_type("{Ty2* Ty3}", "Ty2", "{Ty2 Ty2* Ty3}").
+has_type("{Ty2* Ty3}", "Ty2*").
+has_type("{Ty2* Ty3}", "Ty3").
+append_type("{Ty2* Ty3}", "Ty3*", "{Ty2* Ty3 Ty3*}").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "i8", "{Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty2 Ty2* i8}", "i8").
+append_type("{Ty1 Ty2 Ty2* i8}", "i8*", "{Ty1 Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* i8}").
+has_type("{Ty1 Ty2 Ty2* i8}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* i8}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* i8}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 i8}").
+append_type("{Ty1 Ty2 Ty2* i8}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8}", "i8").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8}", "i8*", "{Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "i8", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3*").
+has_type("{i8 i8*}", "i8").
+has_type("{i8 i8*}", "i8*").
+append_type("{i8 i8*}", "Ty1", "{Ty1 i8 i8*}").
+append_type("{i8 i8*}", "Ty1*", "{Ty1* i8 i8*}").
+append_type("{i8 i8*}", "Ty2", "{Ty2 i8 i8*}").
+append_type("{i8 i8*}", "Ty2*", "{Ty2* i8 i8*}").
+append_type("{i8 i8*}", "Ty3", "{Ty3 i8 i8*}").
+append_type("{i8 i8*}", "Ty3*", "{Ty3* i8 i8*}").
+append_type("{Ty1* Ty2* Ty3 Ty3*}", "i8", "{Ty1* Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1* Ty2* Ty3 Ty3*}", "i8*", "{Ty1* Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty2* Ty3 Ty3*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2* Ty3 Ty3*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 Ty3*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1* Ty2* Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "i8", "{Ty1 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty2 i8}", "i8").
+append_type("{Ty1 Ty2 i8}", "i8*", "{Ty1 Ty2 i8 i8*}").
+has_type("{Ty1 Ty2 i8}", "Ty1").
+append_type("{Ty1 Ty2 i8}", "Ty1*", "{Ty1 Ty1* Ty2 i8}").
+has_type("{Ty1 Ty2 i8}", "Ty2").
+append_type("{Ty1 Ty2 i8}", "Ty2*", "{Ty1 Ty2 Ty2* i8}").
+append_type("{Ty1 Ty2 i8}", "Ty3", "{Ty1 Ty2 Ty3 i8}").
+append_type("{Ty1 Ty2 i8}", "Ty3*", "{Ty1 Ty2 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "i8", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty3 Ty3*}", "i8", "{Ty1 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty3 Ty3*}", "i8*", "{Ty1 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty3 Ty3*}", "Ty1").
+append_type("{Ty1 Ty3 Ty3*}", "Ty1*", "{Ty1 Ty1* Ty3 Ty3*}").
+append_type("{Ty1 Ty3 Ty3*}", "Ty2", "{Ty1 Ty2 Ty3 Ty3*}").
+append_type("{Ty1 Ty3 Ty3*}", "Ty2*", "{Ty1 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty3 Ty3*}", "Ty3*").
+has_type("{Ty2 Ty3 i8}", "i8").
+append_type("{Ty2 Ty3 i8}", "i8*", "{Ty2 Ty3 i8 i8*}").
+append_type("{Ty2 Ty3 i8}", "Ty1", "{Ty1 Ty2 Ty3 i8}").
+append_type("{Ty2 Ty3 i8}", "Ty1*", "{Ty1* Ty2 Ty3 i8}").
+has_type("{Ty2 Ty3 i8}", "Ty2").
+append_type("{Ty2 Ty3 i8}", "Ty2*", "{Ty2 Ty2* Ty3 i8}").
+has_type("{Ty2 Ty3 i8}", "Ty3").
+append_type("{Ty2 Ty3 i8}", "Ty3*", "{Ty2 Ty3 Ty3* i8}").
+append_type("{Ty2}", "i8", "{Ty2 i8}").
+append_type("{Ty2}", "i8*", "{Ty2 i8*}").
+append_type("{Ty2}", "Ty1", "{Ty1 Ty2}").
+append_type("{Ty2}", "Ty1*", "{Ty1* Ty2}").
+has_type("{Ty2}", "Ty2").
+append_type("{Ty2}", "Ty2*", "{Ty2 Ty2*}").
+append_type("{Ty2}", "Ty3", "{Ty2 Ty3}").
+append_type("{Ty2}", "Ty3*", "{Ty2 Ty3*}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty2 i8}", "i8").
+append_type("{Ty2 i8}", "i8*", "{Ty2 i8 i8*}").
+append_type("{Ty2 i8}", "Ty1", "{Ty1 Ty2 i8}").
+append_type("{Ty2 i8}", "Ty1*", "{Ty1* Ty2 i8}").
+has_type("{Ty2 i8}", "Ty2").
+append_type("{Ty2 i8}", "Ty2*", "{Ty2 Ty2* i8}").
+append_type("{Ty2 i8}", "Ty3", "{Ty2 Ty3 i8}").
+append_type("{Ty2 i8}", "Ty3*", "{Ty2 Ty3* i8}").
+has_type("{Ty1* Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty2* Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2* Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3* i8 i8*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty1* Ty2* Ty3* i8 i8*}", "Ty3", "{Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty3*}", "i8", "{Ty3* i8}").
+append_type("{Ty3*}", "i8*", "{Ty3* i8*}").
+append_type("{Ty3*}", "Ty1", "{Ty1 Ty3*}").
+append_type("{Ty3*}", "Ty1*", "{Ty1* Ty3*}").
+append_type("{Ty3*}", "Ty2", "{Ty2 Ty3*}").
+append_type("{Ty3*}", "Ty2*", "{Ty2* Ty3*}").
+append_type("{Ty3*}", "Ty3", "{Ty3 Ty3*}").
+has_type("{Ty3*}", "Ty3*").
+append_type("{Ty1* Ty3* i8*}", "i8", "{Ty1* Ty3* i8 i8*}").
+has_type("{Ty1* Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty3* i8*}").
+has_type("{Ty1* Ty3* i8*}", "Ty1*").
+append_type("{Ty1* Ty3* i8*}", "Ty2", "{Ty1* Ty2 Ty3* i8*}").
+append_type("{Ty1* Ty3* i8*}", "Ty2*", "{Ty1* Ty2* Ty3* i8*}").
+append_type("{Ty1* Ty3* i8*}", "Ty3", "{Ty1* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty2 Ty2*}", "i8", "{Ty1 Ty2 Ty2* i8}").
+append_type("{Ty1 Ty2 Ty2*}", "i8*", "{Ty1 Ty2 Ty2* i8*}").
+has_type("{Ty1 Ty2 Ty2*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2*}").
+has_type("{Ty1 Ty2 Ty2*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2*}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2*}", "Ty3", "{Ty1 Ty2 Ty2* Ty3}").
+append_type("{Ty1 Ty2 Ty2*}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3*}").
+append_type("{Ty1*}", "i8", "{Ty1* i8}").
+append_type("{Ty1*}", "i8*", "{Ty1* i8*}").
+append_type("{Ty1*}", "Ty1", "{Ty1 Ty1*}").
+has_type("{Ty1*}", "Ty1*").
+append_type("{Ty1*}", "Ty2", "{Ty1* Ty2}").
+append_type("{Ty1*}", "Ty2*", "{Ty1* Ty2*}").
+append_type("{Ty1*}", "Ty3", "{Ty1* Ty3}").
+append_type("{Ty1*}", "Ty3*", "{Ty1* Ty3*}").
+has_type("{Ty1* Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty1* Ty2* Ty3 i8 i8*}", "i8*").
+append_type("{Ty1* Ty2* Ty3 i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty2* Ty3 i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 i8 i8*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1* Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty2*}", "i8", "{Ty2 Ty2* i8}").
+append_type("{Ty2 Ty2*}", "i8*", "{Ty2 Ty2* i8*}").
+append_type("{Ty2 Ty2*}", "Ty1", "{Ty1 Ty2 Ty2*}").
+append_type("{Ty2 Ty2*}", "Ty1*", "{Ty1* Ty2 Ty2*}").
+has_type("{Ty2 Ty2*}", "Ty2").
+has_type("{Ty2 Ty2*}", "Ty2*").
+append_type("{Ty2 Ty2*}", "Ty3", "{Ty2 Ty2* Ty3}").
+append_type("{Ty2 Ty2*}", "Ty3*", "{Ty2 Ty2* Ty3*}").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty1*}", "i8", "{Ty1 Ty1* i8}").
+append_type("{Ty1 Ty1*}", "i8*", "{Ty1 Ty1* i8*}").
+has_type("{Ty1 Ty1*}", "Ty1").
+has_type("{Ty1 Ty1*}", "Ty1*").
+append_type("{Ty1 Ty1*}", "Ty2", "{Ty1 Ty1* Ty2}").
+append_type("{Ty1 Ty1*}", "Ty2*", "{Ty1 Ty1* Ty2*}").
+append_type("{Ty1 Ty1*}", "Ty3", "{Ty1 Ty1* Ty3}").
+append_type("{Ty1 Ty1*}", "Ty3*", "{Ty1 Ty1* Ty3*}").
+append_type("{Ty2* Ty3*}", "i8", "{Ty2* Ty3* i8}").
+append_type("{Ty2* Ty3*}", "i8*", "{Ty2* Ty3* i8*}").
+append_type("{Ty2* Ty3*}", "Ty1", "{Ty1 Ty2* Ty3*}").
+append_type("{Ty2* Ty3*}", "Ty1*", "{Ty1* Ty2* Ty3*}").
+append_type("{Ty2* Ty3*}", "Ty2", "{Ty2 Ty2* Ty3*}").
+has_type("{Ty2* Ty3*}", "Ty2*").
+append_type("{Ty2* Ty3*}", "Ty3", "{Ty2* Ty3 Ty3*}").
+has_type("{Ty2* Ty3*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "i8", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "i8", "{Ty1 Ty1* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty3*}", "i8", "{Ty1 Ty3* i8}").
+append_type("{Ty1 Ty3*}", "i8*", "{Ty1 Ty3* i8*}").
+has_type("{Ty1 Ty3*}", "Ty1").
+append_type("{Ty1 Ty3*}", "Ty1*", "{Ty1 Ty1* Ty3*}").
+append_type("{Ty1 Ty3*}", "Ty2", "{Ty1 Ty2 Ty3*}").
+append_type("{Ty1 Ty3*}", "Ty2*", "{Ty1 Ty2* Ty3*}").
+append_type("{Ty1 Ty3*}", "Ty3", "{Ty1 Ty3 Ty3*}").
+has_type("{Ty1 Ty3*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 i8}", "i8").
+append_type("{Ty1 Ty1* Ty3 i8}", "i8*", "{Ty1 Ty1* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 i8}").
+append_type("{Ty1 Ty1* Ty3 i8}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 i8}").
+has_type("{Ty1 Ty1* Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty1* Ty3 i8}", "Ty3*", "{Ty1 Ty1* Ty3 Ty3* i8}").
+has_type("{Ty2* i8 i8*}", "i8").
+has_type("{Ty2* i8 i8*}", "i8*").
+append_type("{Ty2* i8 i8*}", "Ty1", "{Ty1 Ty2* i8 i8*}").
+append_type("{Ty2* i8 i8*}", "Ty1*", "{Ty1* Ty2* i8 i8*}").
+append_type("{Ty2* i8 i8*}", "Ty2", "{Ty2 Ty2* i8 i8*}").
+has_type("{Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty2* i8 i8*}", "Ty3", "{Ty2* Ty3 i8 i8*}").
+append_type("{Ty2* i8 i8*}", "Ty3*", "{Ty2* Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 i8*}", "i8", "{Ty1* Ty2 i8 i8*}").
+has_type("{Ty1* Ty2 i8*}", "i8*").
+append_type("{Ty1* Ty2 i8*}", "Ty1", "{Ty1 Ty1* Ty2 i8*}").
+has_type("{Ty1* Ty2 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 i8*}", "Ty2").
+append_type("{Ty1* Ty2 i8*}", "Ty2*", "{Ty1* Ty2 Ty2* i8*}").
+append_type("{Ty1* Ty2 i8*}", "Ty3", "{Ty1* Ty2 Ty3 i8*}").
+append_type("{Ty1* Ty2 i8*}", "Ty3*", "{Ty1* Ty2 Ty3* i8*}").
+append_type("{Ty1 Ty2 Ty2* Ty3}", "i8", "{Ty1 Ty2 Ty2* Ty3 i8}").
+append_type("{Ty1 Ty2 Ty2* Ty3}", "i8*", "{Ty1 Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty1 Ty2 Ty2* Ty3}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3}", "Ty3").
+append_type("{Ty1 Ty2 Ty2* Ty3}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3 Ty3*}").
+append_type("{Ty2* i8*}", "i8", "{Ty2* i8 i8*}").
+has_type("{Ty2* i8*}", "i8*").
+append_type("{Ty2* i8*}", "Ty1", "{Ty1 Ty2* i8*}").
+append_type("{Ty2* i8*}", "Ty1*", "{Ty1* Ty2* i8*}").
+append_type("{Ty2* i8*}", "Ty2", "{Ty2 Ty2* i8*}").
+has_type("{Ty2* i8*}", "Ty2*").
+append_type("{Ty2* i8*}", "Ty3", "{Ty2* Ty3 i8*}").
+append_type("{Ty2* i8*}", "Ty3*", "{Ty2* Ty3* i8*}").
+has_type("{Ty2 i8 i8*}", "i8").
+has_type("{Ty2 i8 i8*}", "i8*").
+append_type("{Ty2 i8 i8*}", "Ty1", "{Ty1 Ty2 i8 i8*}").
+append_type("{Ty2 i8 i8*}", "Ty1*", "{Ty1* Ty2 i8 i8*}").
+has_type("{Ty2 i8 i8*}", "Ty2").
+append_type("{Ty2 i8 i8*}", "Ty2*", "{Ty2 Ty2* i8 i8*}").
+append_type("{Ty2 i8 i8*}", "Ty3", "{Ty2 Ty3 i8 i8*}").
+append_type("{Ty2 i8 i8*}", "Ty3*", "{Ty2 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8}", "i8").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8}", "i8*", "{Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* Ty3* i8}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty2* Ty3* i8}", "Ty3*").
+has_type("{Ty1* Ty2 Ty3* i8}", "i8").
+append_type("{Ty1* Ty2 Ty3* i8}", "i8*", "{Ty1* Ty2 Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty3* i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3* i8}", "Ty2").
+append_type("{Ty1* Ty2 Ty3* i8}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1* Ty2 Ty3* i8}", "Ty3", "{Ty1* Ty2 Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2 Ty3* i8}", "Ty3*").
+append_type("{Ty1 Ty2 Ty3*}", "i8", "{Ty1 Ty2 Ty3* i8}").
+append_type("{Ty1 Ty2 Ty3*}", "i8*", "{Ty1 Ty2 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3*}").
+has_type("{Ty1 Ty2 Ty3*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3*}").
+append_type("{Ty1 Ty2 Ty3*}", "Ty3", "{Ty1 Ty2 Ty3 Ty3*}").
+has_type("{Ty1 Ty2 Ty3*}", "Ty3*").
+has_type("{Ty2 Ty3 i8 i8*}", "i8").
+has_type("{Ty2 Ty3 i8 i8*}", "i8*").
+append_type("{Ty2 Ty3 i8 i8*}", "Ty1", "{Ty1 Ty2 Ty3 i8 i8*}").
+append_type("{Ty2 Ty3 i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty3 i8 i8*}").
+has_type("{Ty2 Ty3 i8 i8*}", "Ty2").
+append_type("{Ty2 Ty3 i8 i8*}", "Ty2*", "{Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty2 Ty3 i8 i8*}", "Ty3").
+append_type("{Ty2 Ty3 i8 i8*}", "Ty3*", "{Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty1* Ty2* Ty3 i8*}", "i8", "{Ty1* Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty2* Ty3 i8*}", "i8*").
+append_type("{Ty1* Ty2* Ty3 i8*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 i8*}").
+has_type("{Ty1* Ty2* Ty3 i8*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 i8*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1* Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty1* Ty2* Ty3 i8*}", "Ty3*", "{Ty1* Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty2 Ty3}", "i8", "{Ty1 Ty2 Ty3 i8}").
+append_type("{Ty1 Ty2 Ty3}", "i8*", "{Ty1 Ty2 Ty3 i8*}").
+has_type("{Ty1 Ty2 Ty3}", "Ty1").
+append_type("{Ty1 Ty2 Ty3}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3}").
+has_type("{Ty1 Ty2 Ty3}", "Ty2").
+append_type("{Ty1 Ty2 Ty3}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3}").
+has_type("{Ty1 Ty2 Ty3}", "Ty3").
+append_type("{Ty1 Ty2 Ty3}", "Ty3*", "{Ty1 Ty2 Ty3 Ty3*}").
+append_type("{Ty1 Ty1* Ty3 i8*}", "i8", "{Ty1 Ty1* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty3 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 i8*}").
+append_type("{Ty1 Ty1* Ty3 i8*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty3 i8*}", "Ty3*", "{Ty1 Ty1* Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "i8", "{Ty1 Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "i8", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty2}", "i8", "{Ty1 Ty2 i8}").
+append_type("{Ty1 Ty2}", "i8*", "{Ty1 Ty2 i8*}").
+has_type("{Ty1 Ty2}", "Ty1").
+append_type("{Ty1 Ty2}", "Ty1*", "{Ty1 Ty1* Ty2}").
+has_type("{Ty1 Ty2}", "Ty2").
+append_type("{Ty1 Ty2}", "Ty2*", "{Ty1 Ty2 Ty2*}").
+append_type("{Ty1 Ty2}", "Ty3", "{Ty1 Ty2 Ty3}").
+append_type("{Ty1 Ty2}", "Ty3*", "{Ty1 Ty2 Ty3*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty2* i8}", "i8").
+append_type("{Ty1* Ty2 Ty2* i8}", "i8*", "{Ty1* Ty2 Ty2* i8 i8*}").
+append_type("{Ty1* Ty2 Ty2* i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* i8}").
+has_type("{Ty1* Ty2 Ty2* i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* i8}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* i8}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* i8}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 i8}").
+append_type("{Ty1* Ty2 Ty2* i8}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "i8*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty3 Ty3* i8*}", "i8", "{Ty3 Ty3* i8 i8*}").
+has_type("{Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty3 Ty3* i8*}").
+append_type("{Ty3 Ty3* i8*}", "Ty1*", "{Ty1* Ty3 Ty3* i8*}").
+append_type("{Ty3 Ty3* i8*}", "Ty2", "{Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty3 Ty3* i8*}", "Ty2*", "{Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 i8}", "i8").
+append_type("{Ty1 i8}", "i8*", "{Ty1 i8 i8*}").
+has_type("{Ty1 i8}", "Ty1").
+append_type("{Ty1 i8}", "Ty1*", "{Ty1 Ty1* i8}").
+append_type("{Ty1 i8}", "Ty2", "{Ty1 Ty2 i8}").
+append_type("{Ty1 i8}", "Ty2*", "{Ty1 Ty2* i8}").
+append_type("{Ty1 i8}", "Ty3", "{Ty1 Ty3 i8}").
+append_type("{Ty1 i8}", "Ty3*", "{Ty1 Ty3* i8}").
+has_type("{Ty1* Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty3* i8 i8*}").
+has_type("{Ty1* Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty3* i8 i8*}", "Ty2", "{Ty1* Ty2 Ty3* i8 i8*}").
+append_type("{Ty1* Ty3* i8 i8*}", "Ty2*", "{Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty1* Ty3* i8 i8*}", "Ty3", "{Ty1* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty2 Ty2* Ty3*}", "i8", "{Ty2 Ty2* Ty3* i8}").
+append_type("{Ty2 Ty2* Ty3*}", "i8*", "{Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty2 Ty2* Ty3*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3*}").
+append_type("{Ty2 Ty2* Ty3*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty2 Ty2* Ty3*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3*}", "Ty2*").
+append_type("{Ty2 Ty2* Ty3*}", "Ty3", "{Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty2 Ty2* Ty3*}", "Ty3*").
+append_type("{Ty2 i8*}", "i8", "{Ty2 i8 i8*}").
+has_type("{Ty2 i8*}", "i8*").
+append_type("{Ty2 i8*}", "Ty1", "{Ty1 Ty2 i8*}").
+append_type("{Ty2 i8*}", "Ty1*", "{Ty1* Ty2 i8*}").
+has_type("{Ty2 i8*}", "Ty2").
+append_type("{Ty2 i8*}", "Ty2*", "{Ty2 Ty2* i8*}").
+append_type("{Ty2 i8*}", "Ty3", "{Ty2 Ty3 i8*}").
+append_type("{Ty2 i8*}", "Ty3*", "{Ty2 Ty3* i8*}").
+append_type("{Ty2 Ty2* i8*}", "i8", "{Ty2 Ty2* i8 i8*}").
+has_type("{Ty2 Ty2* i8*}", "i8*").
+append_type("{Ty2 Ty2* i8*}", "Ty1", "{Ty1 Ty2 Ty2* i8*}").
+append_type("{Ty2 Ty2* i8*}", "Ty1*", "{Ty1* Ty2 Ty2* i8*}").
+has_type("{Ty2 Ty2* i8*}", "Ty2").
+has_type("{Ty2 Ty2* i8*}", "Ty2*").
+append_type("{Ty2 Ty2* i8*}", "Ty3", "{Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty2 Ty2* i8*}", "Ty3*", "{Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty2 Ty2* Ty3}", "i8", "{Ty2 Ty2* Ty3 i8}").
+append_type("{Ty2 Ty2* Ty3}", "i8*", "{Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty2 Ty2* Ty3}", "Ty1", "{Ty1 Ty2 Ty2* Ty3}").
+append_type("{Ty2 Ty2* Ty3}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty2 Ty2* Ty3}", "Ty2").
+has_type("{Ty2 Ty2* Ty3}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3}", "Ty3").
+append_type("{Ty2 Ty2* Ty3}", "Ty3*", "{Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2 Ty2* i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty2* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* i8 i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2* i8 i8*}", "Ty3", "{Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty1* Ty2 Ty2* i8 i8*}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty2}", "i8", "{Ty1 Ty1* Ty2 i8}").
+append_type("{Ty1 Ty1* Ty2}", "i8*", "{Ty1 Ty1* Ty2 i8*}").
+has_type("{Ty1 Ty1* Ty2}", "Ty1").
+has_type("{Ty1 Ty1* Ty2}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2}", "Ty2").
+append_type("{Ty1 Ty1* Ty2}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2*}").
+append_type("{Ty1 Ty1* Ty2}", "Ty3", "{Ty1 Ty1* Ty2 Ty3}").
+append_type("{Ty1 Ty1* Ty2}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3*}").
+append_type("{Ty1* Ty2* Ty3* i8*}", "i8", "{Ty1* Ty2* Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty2* Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3* i8*}").
+has_type("{Ty1* Ty2* Ty3* i8*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3* i8*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1* Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty1* Ty2* Ty3* i8*}", "Ty3", "{Ty1* Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2* Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2* i8*}", "i8", "{Ty1 Ty1* Ty2* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* i8*}").
+has_type("{Ty1 Ty1* Ty2* i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* i8*}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 i8*}").
+append_type("{Ty1 Ty1* Ty2* i8*}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3* i8*}").
+has_type("{Ty2 Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty2 Ty2* Ty3 i8 i8*}", "i8*").
+append_type("{Ty2 Ty2* Ty3 i8 i8*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty2 Ty2* Ty3 i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty2 Ty2* Ty3 i8 i8*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty2 Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3 i8}", "i8").
+append_type("{Ty2 Ty2* Ty3 i8}", "i8*", "{Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty2 Ty2* Ty3 i8}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 i8}").
+append_type("{Ty2 Ty2* Ty3 i8}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty2 Ty2* Ty3 i8}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty2 Ty2* Ty3 i8}", "Ty3*", "{Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* i8*}", "i8", "{Ty1 Ty1* i8 i8*}").
+has_type("{Ty1 Ty1* i8*}", "i8*").
+has_type("{Ty1 Ty1* i8*}", "Ty1").
+has_type("{Ty1 Ty1* i8*}", "Ty1*").
+append_type("{Ty1 Ty1* i8*}", "Ty2", "{Ty1 Ty1* Ty2 i8*}").
+append_type("{Ty1 Ty1* i8*}", "Ty2*", "{Ty1 Ty1* Ty2* i8*}").
+append_type("{Ty1 Ty1* i8*}", "Ty3", "{Ty1 Ty1* Ty3 i8*}").
+append_type("{Ty1 Ty1* i8*}", "Ty3*", "{Ty1 Ty1* Ty3* i8*}").
+has_type("{Ty1* i8}", "i8").
+append_type("{Ty1* i8}", "i8*", "{Ty1* i8 i8*}").
+append_type("{Ty1* i8}", "Ty1", "{Ty1 Ty1* i8}").
+has_type("{Ty1* i8}", "Ty1*").
+append_type("{Ty1* i8}", "Ty2", "{Ty1* Ty2 i8}").
+append_type("{Ty1* i8}", "Ty2*", "{Ty1* Ty2* i8}").
+append_type("{Ty1* i8}", "Ty3", "{Ty1* Ty3 i8}").
+append_type("{Ty1* i8}", "Ty3*", "{Ty1* Ty3* i8}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8}", "i8*", "{Ty1 Ty1* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1* Ty2 i8 i8*}", "i8").
+has_type("{Ty1* Ty2 i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 i8 i8*}").
+has_type("{Ty1* Ty2 i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 i8 i8*}", "Ty2").
+append_type("{Ty1* Ty2 i8 i8*}", "Ty2*", "{Ty1* Ty2 Ty2* i8 i8*}").
+append_type("{Ty1* Ty2 i8 i8*}", "Ty3", "{Ty1* Ty2 Ty3 i8 i8*}").
+append_type("{Ty1* Ty2 i8 i8*}", "Ty3*", "{Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* i8 i8*}", "i8").
+has_type("{Ty2 Ty2* i8 i8*}", "i8*").
+append_type("{Ty2 Ty2* i8 i8*}", "Ty1", "{Ty1 Ty2 Ty2* i8 i8*}").
+append_type("{Ty2 Ty2* i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty2 Ty2* i8 i8*}", "Ty2").
+has_type("{Ty2 Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty2 Ty2* i8 i8*}", "Ty3", "{Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty2 Ty2* i8 i8*}", "Ty3*", "{Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "i8", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "i8*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1* Ty2 Ty3 i8*}", "i8", "{Ty1* Ty2 Ty3 i8 i8*}").
+has_type("{Ty1* Ty2 Ty3 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty3 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 i8*}").
+has_type("{Ty1* Ty2 Ty3 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 i8*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 i8*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1* Ty2 Ty3 i8*}", "Ty3").
+append_type("{Ty1* Ty2 Ty3 i8*}", "Ty3*", "{Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8}", "i8*", "{Ty1 Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "i8", "{Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1* Ty2 Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 i8 i8*}").
+append_type("{Ty1 Ty1* Ty2* i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty2 i8*}", "i8", "{Ty1 Ty1* Ty2 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* i8*}").
+append_type("{Ty1 Ty1* Ty2 i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 i8*}").
+append_type("{Ty1 Ty1* Ty2 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3* i8*}").
+append_type("{Ty1 Ty2 Ty3 Ty3*}", "i8", "{Ty1 Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2 Ty3 Ty3*}", "i8*", "{Ty1 Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 Ty3*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 Ty3*}").
+has_type("{Ty1 Ty2 Ty3 Ty3*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 Ty3*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty2 Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty2 Ty3 Ty3*}", "Ty3*").
+has_type("{Ty1* Ty2* Ty3 i8}", "i8").
+append_type("{Ty1* Ty2* Ty3 i8}", "i8*", "{Ty1* Ty2* Ty3 i8 i8*}").
+append_type("{Ty1* Ty2* Ty3 i8}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 i8}").
+has_type("{Ty1* Ty2* Ty3 i8}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 i8}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1* Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty1* Ty2* Ty3 i8}", "Ty3*", "{Ty1* Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "i8", "{Ty1 Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty2* i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "i8", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty2* Ty3* i8 i8*}", "i8*").
+append_type("{Ty2* Ty3* i8 i8*}", "Ty1", "{Ty1 Ty2* Ty3* i8 i8*}").
+append_type("{Ty2* Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty2* Ty3* i8 i8*}", "Ty2", "{Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty2* Ty3* i8 i8*}", "Ty3", "{Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2* Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty2* Ty3 i8 i8*}", "i8*").
+append_type("{Ty2* Ty3 i8 i8*}", "Ty1", "{Ty1 Ty2* Ty3 i8 i8*}").
+append_type("{Ty2* Ty3 i8 i8*}", "Ty1*", "{Ty1* Ty2* Ty3 i8 i8*}").
+append_type("{Ty2* Ty3 i8 i8*}", "Ty2", "{Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty2*}", "i8", "{Ty1 Ty2* i8}").
+append_type("{Ty1 Ty2*}", "i8*", "{Ty1 Ty2* i8*}").
+has_type("{Ty1 Ty2*}", "Ty1").
+append_type("{Ty1 Ty2*}", "Ty1*", "{Ty1 Ty1* Ty2*}").
+append_type("{Ty1 Ty2*}", "Ty2", "{Ty1 Ty2 Ty2*}").
+has_type("{Ty1 Ty2*}", "Ty2*").
+append_type("{Ty1 Ty2*}", "Ty3", "{Ty1 Ty2* Ty3}").
+append_type("{Ty1 Ty2*}", "Ty3*", "{Ty1 Ty2* Ty3*}").
+has_type("{Ty1 Ty2* Ty3 i8}", "i8").
+append_type("{Ty1 Ty2* Ty3 i8}", "i8*", "{Ty1 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2* Ty3 i8}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 i8}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 i8}").
+append_type("{Ty1 Ty2* Ty3 i8}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1 Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty2* Ty3 i8}", "Ty3*", "{Ty1 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1* Ty3*}", "i8", "{Ty1* Ty3* i8}").
+append_type("{Ty1* Ty3*}", "i8*", "{Ty1* Ty3* i8*}").
+append_type("{Ty1* Ty3*}", "Ty1", "{Ty1 Ty1* Ty3*}").
+has_type("{Ty1* Ty3*}", "Ty1*").
+append_type("{Ty1* Ty3*}", "Ty2", "{Ty1* Ty2 Ty3*}").
+append_type("{Ty1* Ty3*}", "Ty2*", "{Ty1* Ty2* Ty3*}").
+append_type("{Ty1* Ty3*}", "Ty3", "{Ty1* Ty3 Ty3*}").
+has_type("{Ty1* Ty3*}", "Ty3*").
+append_type("{Ty2 Ty2* Ty3 i8*}", "i8", "{Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty2 Ty2* Ty3 i8*}", "i8*").
+append_type("{Ty2 Ty2* Ty3 i8*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty2 Ty2* Ty3 i8*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty2 Ty2* Ty3 i8*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty2 Ty2* Ty3 i8*}", "Ty3*", "{Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty3 Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty3 Ty3* i8 i8*}", "Ty2", "{Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty1* Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1* Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty3 Ty3*}", "i8", "{Ty1 Ty1* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty3 Ty3*}", "i8*", "{Ty1 Ty1* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty3 Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 Ty3*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 Ty3*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 Ty3*}").
+append_type("{Ty1 Ty1* Ty3 Ty3*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty1* Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1* Ty2 Ty3}", "i8", "{Ty1* Ty2 Ty3 i8}").
+append_type("{Ty1* Ty2 Ty3}", "i8*", "{Ty1* Ty2 Ty3 i8*}").
+append_type("{Ty1* Ty2 Ty3}", "Ty1", "{Ty1 Ty1* Ty2 Ty3}").
+has_type("{Ty1* Ty2 Ty3}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3}", "Ty2").
+append_type("{Ty1* Ty2 Ty3}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty1* Ty2 Ty3}", "Ty3").
+append_type("{Ty1* Ty2 Ty3}", "Ty3*", "{Ty1* Ty2 Ty3 Ty3*}").
+has_type("{Ty1 Ty2 Ty2* i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty2* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* i8 i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* i8 i8*}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 i8 i8*}").
+append_type("{Ty1 Ty2 Ty2* i8 i8*}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1 Ty3 Ty3* i8*}", "i8", "{Ty1 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty3 Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty3 Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty3 Ty3* i8*}", "Ty2", "{Ty1 Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty3 Ty3* i8*}", "Ty2*", "{Ty1 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty3 i8}", "i8").
+append_type("{Ty1* Ty2 Ty3 i8}", "i8*", "{Ty1* Ty2 Ty3 i8 i8*}").
+append_type("{Ty1* Ty2 Ty3 i8}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 i8}").
+has_type("{Ty1* Ty2 Ty3 i8}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 i8}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 i8}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1* Ty2 Ty3 i8}", "Ty3").
+append_type("{Ty1* Ty2 Ty3 i8}", "Ty3*", "{Ty1* Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1* Ty2 Ty3*}", "i8", "{Ty1* Ty2 Ty3* i8}").
+append_type("{Ty1* Ty2 Ty3*}", "i8*", "{Ty1* Ty2 Ty3* i8*}").
+append_type("{Ty1* Ty2 Ty3*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3*}").
+has_type("{Ty1* Ty2 Ty3*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3*}").
+append_type("{Ty1* Ty2 Ty3*}", "Ty3", "{Ty1* Ty2 Ty3 Ty3*}").
+has_type("{Ty1* Ty2 Ty3*}", "Ty3*").
+append_type("{}", "i8", "{i8}").
+append_type("{}", "i8*", "{i8*}").
+append_type("{}", "Ty1", "{Ty1}").
+append_type("{}", "Ty1*", "{Ty1*}").
+append_type("{}", "Ty2", "{Ty2}").
+append_type("{}", "Ty2*", "{Ty2*}").
+append_type("{}", "Ty3", "{Ty3}").
+append_type("{}", "Ty3*", "{Ty3*}").
+append_type("{Ty1 Ty1* Ty2* Ty3*}", "i8", "{Ty1 Ty1* Ty2* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2* Ty3*}", "i8*", "{Ty1 Ty1* Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty1 Ty1* Ty2* Ty3*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* Ty3*}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty2* Ty3*}", "Ty3*").
+append_type("{Ty2 Ty3* i8*}", "i8", "{Ty2 Ty3* i8 i8*}").
+has_type("{Ty2 Ty3* i8*}", "i8*").
+append_type("{Ty2 Ty3* i8*}", "Ty1", "{Ty1 Ty2 Ty3* i8*}").
+append_type("{Ty2 Ty3* i8*}", "Ty1*", "{Ty1* Ty2 Ty3* i8*}").
+has_type("{Ty2 Ty3* i8*}", "Ty2").
+append_type("{Ty2 Ty3* i8*}", "Ty2*", "{Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty2 Ty3* i8*}", "Ty3", "{Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "i8*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 i8}", "Ty3*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2* Ty3 i8 i8*}", "i8").
+has_type("{Ty1 Ty2* Ty3 i8 i8*}", "i8*").
+has_type("{Ty1 Ty2* Ty3 i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 i8 i8*}").
+append_type("{Ty1 Ty2* Ty3 i8 i8*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2* Ty3 i8 i8*}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1 Ty2* Ty3 i8 i8*}", "Ty3*", "{Ty1 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty3 i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty3 i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty3 i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3 i8 i8*}").
+has_type("{Ty1* Ty2 Ty3 i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3 i8 i8*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3 i8 i8*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty2 Ty3 i8 i8*}", "Ty3").
+append_type("{Ty1* Ty2 Ty3 i8 i8*}", "Ty3*", "{Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty3 i8*}", "i8", "{Ty2 Ty3 i8 i8*}").
+has_type("{Ty2 Ty3 i8*}", "i8*").
+append_type("{Ty2 Ty3 i8*}", "Ty1", "{Ty1 Ty2 Ty3 i8*}").
+append_type("{Ty2 Ty3 i8*}", "Ty1*", "{Ty1* Ty2 Ty3 i8*}").
+has_type("{Ty2 Ty3 i8*}", "Ty2").
+append_type("{Ty2 Ty3 i8*}", "Ty2*", "{Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty2 Ty3 i8*}", "Ty3").
+append_type("{Ty2 Ty3 i8*}", "Ty3*", "{Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "i8", "{Ty1 Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "i8*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 i8 i8*}").
+append_type("{Ty1 Ty1* i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2* i8 i8*}").
+append_type("{Ty1 Ty1* i8 i8*}", "Ty3", "{Ty1 Ty1* Ty3 i8 i8*}").
+append_type("{Ty1 Ty1* i8 i8*}", "Ty3*", "{Ty1 Ty1* Ty3* i8 i8*}").
+append_type("{Ty1 Ty2* Ty3 Ty3*}", "i8", "{Ty1 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2* Ty3 Ty3*}", "i8*", "{Ty1 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2* Ty3 Ty3*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 Ty3*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 Ty3*}").
+append_type("{Ty1 Ty2* Ty3 Ty3*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty2* Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1* Ty2 Ty3* i8*}", "i8", "{Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty3* i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty3* i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty3* i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3* i8*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3* i8*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty1* Ty2 Ty3* i8*}", "Ty3", "{Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1* Ty2 Ty3* i8*}", "Ty3*").
+append_type("{Ty2 Ty3 Ty3* i8*}", "i8", "{Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty2 Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty2 Ty3 Ty3* i8*}", "Ty1*", "{Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty3 Ty3* i8*}", "Ty2").
+append_type("{Ty2 Ty3 Ty3* i8*}", "Ty2*", "{Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty2 Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty2 Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "i8", "{Ty1 Ty1* Ty2 Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8*}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}").
+append_type("{Ty2* Ty3 Ty3*}", "i8", "{Ty2* Ty3 Ty3* i8}").
+append_type("{Ty2* Ty3 Ty3*}", "i8*", "{Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty2* Ty3 Ty3*}", "Ty1", "{Ty1 Ty2* Ty3 Ty3*}").
+append_type("{Ty2* Ty3 Ty3*}", "Ty1*", "{Ty1* Ty2* Ty3 Ty3*}").
+append_type("{Ty2* Ty3 Ty3*}", "Ty2", "{Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty2* Ty3 Ty3*}", "Ty3*").
+has_type("{Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty3 Ty3* i8 i8*}").
+append_type("{Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty3 Ty3* i8 i8*}").
+append_type("{Ty3 Ty3* i8 i8*}", "Ty2", "{Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty3 Ty3* i8 i8*}", "Ty3*").
+append_type("{Ty2 Ty2* Ty3* i8*}", "i8", "{Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty2 Ty2* Ty3* i8*}", "i8*").
+append_type("{Ty2 Ty2* Ty3* i8*}", "Ty1", "{Ty1 Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty2 Ty2* Ty3* i8*}", "Ty1*", "{Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty2 Ty2* Ty3* i8*}", "Ty2").
+has_type("{Ty2 Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty2 Ty2* Ty3* i8*}", "Ty3", "{Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2 Ty2* Ty3* i8*}", "Ty3*").
+append_type("{Ty1* i8*}", "i8", "{Ty1* i8 i8*}").
+has_type("{Ty1* i8*}", "i8*").
+append_type("{Ty1* i8*}", "Ty1", "{Ty1 Ty1* i8*}").
+has_type("{Ty1* i8*}", "Ty1*").
+append_type("{Ty1* i8*}", "Ty2", "{Ty1* Ty2 i8*}").
+append_type("{Ty1* i8*}", "Ty2*", "{Ty1* Ty2* i8*}").
+append_type("{Ty1* i8*}", "Ty3", "{Ty1* Ty3 i8*}").
+append_type("{Ty1* i8*}", "Ty3*", "{Ty1* Ty3* i8*}").
+append_type("{Ty3* i8*}", "i8", "{Ty3* i8 i8*}").
+has_type("{Ty3* i8*}", "i8*").
+append_type("{Ty3* i8*}", "Ty1", "{Ty1 Ty3* i8*}").
+append_type("{Ty3* i8*}", "Ty1*", "{Ty1* Ty3* i8*}").
+append_type("{Ty3* i8*}", "Ty2", "{Ty2 Ty3* i8*}").
+append_type("{Ty3* i8*}", "Ty2*", "{Ty2* Ty3* i8*}").
+append_type("{Ty3* i8*}", "Ty3", "{Ty3 Ty3* i8*}").
+has_type("{Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty2 Ty3* i8*}", "i8", "{Ty1 Ty2 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3* i8*}", "Ty2").
+append_type("{Ty1 Ty2 Ty3* i8*}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3* i8*}").
+append_type("{Ty1 Ty2 Ty3* i8*}", "Ty3", "{Ty1 Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3* i8*}", "Ty3*").
+append_type("{Ty1* Ty2 Ty2* Ty3}", "i8", "{Ty1* Ty2 Ty2* Ty3 i8}").
+append_type("{Ty1* Ty2 Ty2* Ty3}", "i8*", "{Ty1* Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty1* Ty2 Ty2* Ty3}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty1* Ty2 Ty2* Ty3}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3}", "Ty3").
+append_type("{Ty1* Ty2 Ty2* Ty3}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1* Ty3 Ty3* i8}", "i8*", "{Ty1* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1* Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty3 Ty3* i8}", "Ty1*").
+append_type("{Ty1* Ty3 Ty3* i8}", "Ty2", "{Ty1* Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1* Ty3 Ty3* i8}", "Ty2*", "{Ty1* Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty3 i8}", "i8").
+append_type("{Ty1 Ty3 i8}", "i8*", "{Ty1 Ty3 i8 i8*}").
+has_type("{Ty1 Ty3 i8}", "Ty1").
+append_type("{Ty1 Ty3 i8}", "Ty1*", "{Ty1 Ty1* Ty3 i8}").
+append_type("{Ty1 Ty3 i8}", "Ty2", "{Ty1 Ty2 Ty3 i8}").
+append_type("{Ty1 Ty3 i8}", "Ty2*", "{Ty1 Ty2* Ty3 i8}").
+has_type("{Ty1 Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty3 i8}", "Ty3*", "{Ty1 Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty1 Ty1* Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty2 Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty2 Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty2 Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty2 Ty3 Ty3* i8 i8*}").
+append_type("{Ty2 Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty3 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty2 Ty3 Ty3* i8 i8*}", "Ty2*", "{Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2 Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty2 Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty2 Ty3 i8}", "i8").
+append_type("{Ty1 Ty2 Ty3 i8}", "i8*", "{Ty1 Ty2 Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 i8}").
+has_type("{Ty1 Ty2 Ty3 i8}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 i8}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1 Ty2 Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty2 Ty3 i8}", "Ty3*", "{Ty1 Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2 Ty2* i8*}", "i8", "{Ty1 Ty2 Ty2* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* i8*}").
+has_type("{Ty1 Ty2 Ty2* i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* i8*}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* i8*}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 i8*}").
+append_type("{Ty1 Ty2 Ty2* i8*}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8}", "i8*", "{Ty1 Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8}", "Ty2").
+append_type("{Ty1 Ty2 Ty3 Ty3* i8}", "Ty2*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty2 Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "i8", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "i8*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty3 Ty3*}", "Ty3*").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8}", "i8*", "{Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3 Ty3* i8}", "Ty2", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1* Ty2* Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty3}", "i8", "{Ty3 i8}").
+append_type("{Ty3}", "i8*", "{Ty3 i8*}").
+append_type("{Ty3}", "Ty1", "{Ty1 Ty3}").
+append_type("{Ty3}", "Ty1*", "{Ty1* Ty3}").
+append_type("{Ty3}", "Ty2", "{Ty2 Ty3}").
+append_type("{Ty3}", "Ty2*", "{Ty2* Ty3}").
+has_type("{Ty3}", "Ty3").
+append_type("{Ty3}", "Ty3*", "{Ty3 Ty3*}").
+append_type("{Ty1 Ty1* Ty2 Ty3}", "i8", "{Ty1 Ty1* Ty2 Ty3 i8}").
+append_type("{Ty1 Ty1* Ty2 Ty3}", "i8*", "{Ty1 Ty1* Ty2 Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty1 Ty1* Ty2 Ty3}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty3}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3 Ty3*}").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "i8", "{Ty1* Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty1* Ty2 Ty2* Ty3 i8*}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1}", "i8", "{Ty1 i8}").
+append_type("{Ty1}", "i8*", "{Ty1 i8*}").
+has_type("{Ty1}", "Ty1").
+append_type("{Ty1}", "Ty1*", "{Ty1 Ty1*}").
+append_type("{Ty1}", "Ty2", "{Ty1 Ty2}").
+append_type("{Ty1}", "Ty2*", "{Ty1 Ty2*}").
+append_type("{Ty1}", "Ty3", "{Ty1 Ty3}").
+append_type("{Ty1}", "Ty3*", "{Ty1 Ty3*}").
+has_type("{Ty1 Ty1* Ty2 i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 i8}", "i8*", "{Ty1 Ty1* Ty2 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 i8}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 i8}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* i8}").
+append_type("{Ty1 Ty1* Ty2 i8}", "Ty3", "{Ty1 Ty1* Ty2 Ty3 i8}").
+append_type("{Ty1 Ty1* Ty2 i8}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3* i8}").
+append_type("{Ty1* Ty3}", "i8", "{Ty1* Ty3 i8}").
+append_type("{Ty1* Ty3}", "i8*", "{Ty1* Ty3 i8*}").
+append_type("{Ty1* Ty3}", "Ty1", "{Ty1 Ty1* Ty3}").
+has_type("{Ty1* Ty3}", "Ty1*").
+append_type("{Ty1* Ty3}", "Ty2", "{Ty1* Ty2 Ty3}").
+append_type("{Ty1* Ty3}", "Ty2*", "{Ty1* Ty2* Ty3}").
+has_type("{Ty1* Ty3}", "Ty3").
+append_type("{Ty1* Ty3}", "Ty3*", "{Ty1* Ty3 Ty3*}").
+has_type("{Ty1* Ty2* i8 i8*}", "i8").
+has_type("{Ty1* Ty2* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2* i8 i8*}").
+has_type("{Ty1* Ty2* i8 i8*}", "Ty1*").
+append_type("{Ty1* Ty2* i8 i8*}", "Ty2", "{Ty1* Ty2 Ty2* i8 i8*}").
+has_type("{Ty1* Ty2* i8 i8*}", "Ty2*").
+append_type("{Ty1* Ty2* i8 i8*}", "Ty3", "{Ty1* Ty2* Ty3 i8 i8*}").
+append_type("{Ty1* Ty2* i8 i8*}", "Ty3*", "{Ty1* Ty2* Ty3* i8 i8*}").
+append_type("{Ty3 i8*}", "i8", "{Ty3 i8 i8*}").
+has_type("{Ty3 i8*}", "i8*").
+append_type("{Ty3 i8*}", "Ty1", "{Ty1 Ty3 i8*}").
+append_type("{Ty3 i8*}", "Ty1*", "{Ty1* Ty3 i8*}").
+append_type("{Ty3 i8*}", "Ty2", "{Ty2 Ty3 i8*}").
+append_type("{Ty3 i8*}", "Ty2*", "{Ty2* Ty3 i8*}").
+has_type("{Ty3 i8*}", "Ty3").
+append_type("{Ty3 i8*}", "Ty3*", "{Ty3 Ty3* i8*}").
+append_type("{Ty2* Ty3 Ty3* i8*}", "i8", "{Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2* Ty3 Ty3* i8*}", "i8*").
+append_type("{Ty2* Ty3 Ty3* i8*}", "Ty1", "{Ty1 Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty2* Ty3 Ty3* i8*}", "Ty1*", "{Ty1* Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty2* Ty3 Ty3* i8*}", "Ty2", "{Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty2* Ty3 Ty3* i8*}", "Ty2*").
+has_type("{Ty2* Ty3 Ty3* i8*}", "Ty3").
+has_type("{Ty2* Ty3 Ty3* i8*}", "Ty3*").
+has_type("{Ty1* Ty3* i8}", "i8").
+append_type("{Ty1* Ty3* i8}", "i8*", "{Ty1* Ty3* i8 i8*}").
+append_type("{Ty1* Ty3* i8}", "Ty1", "{Ty1 Ty1* Ty3* i8}").
+has_type("{Ty1* Ty3* i8}", "Ty1*").
+append_type("{Ty1* Ty3* i8}", "Ty2", "{Ty1* Ty2 Ty3* i8}").
+append_type("{Ty1* Ty3* i8}", "Ty2*", "{Ty1* Ty2* Ty3* i8}").
+append_type("{Ty1* Ty3* i8}", "Ty3", "{Ty1* Ty3 Ty3* i8}").
+has_type("{Ty1* Ty3* i8}", "Ty3*").
+append_type("{Ty1* Ty2 Ty2*}", "i8", "{Ty1* Ty2 Ty2* i8}").
+append_type("{Ty1* Ty2 Ty2*}", "i8*", "{Ty1* Ty2 Ty2* i8*}").
+append_type("{Ty1* Ty2 Ty2*}", "Ty1", "{Ty1 Ty1* Ty2 Ty2*}").
+has_type("{Ty1* Ty2 Ty2*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty2*}", "Ty2").
+has_type("{Ty1* Ty2 Ty2*}", "Ty2*").
+append_type("{Ty1* Ty2 Ty2*}", "Ty3", "{Ty1* Ty2 Ty2* Ty3}").
+append_type("{Ty1* Ty2 Ty2*}", "Ty3*", "{Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty3 i8 i8*}", "i8").
+has_type("{Ty3 i8 i8*}", "i8*").
+append_type("{Ty3 i8 i8*}", "Ty1", "{Ty1 Ty3 i8 i8*}").
+append_type("{Ty3 i8 i8*}", "Ty1*", "{Ty1* Ty3 i8 i8*}").
+append_type("{Ty3 i8 i8*}", "Ty2", "{Ty2 Ty3 i8 i8*}").
+append_type("{Ty3 i8 i8*}", "Ty2*", "{Ty2* Ty3 i8 i8*}").
+has_type("{Ty3 i8 i8*}", "Ty3").
+append_type("{Ty3 i8 i8*}", "Ty3*", "{Ty3 Ty3* i8 i8*}").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "i8", "{Ty1 Ty2 Ty2* Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3* i8*}", "Ty3*").
+has_type("{Ty2* Ty3 i8}", "i8").
+append_type("{Ty2* Ty3 i8}", "i8*", "{Ty2* Ty3 i8 i8*}").
+append_type("{Ty2* Ty3 i8}", "Ty1", "{Ty1 Ty2* Ty3 i8}").
+append_type("{Ty2* Ty3 i8}", "Ty1*", "{Ty1* Ty2* Ty3 i8}").
+append_type("{Ty2* Ty3 i8}", "Ty2", "{Ty2 Ty2* Ty3 i8}").
+has_type("{Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty2* Ty3 i8}", "Ty3*", "{Ty2* Ty3 Ty3* i8}").
+has_type("{Ty2* Ty3 Ty3* i8 i8*}", "i8").
+has_type("{Ty2* Ty3 Ty3* i8 i8*}", "i8*").
+append_type("{Ty2* Ty3 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2* Ty3 Ty3* i8 i8*}", "Ty1*", "{Ty1* Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2* Ty3 Ty3* i8 i8*}", "Ty2", "{Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty2* Ty3 Ty3* i8 i8*}", "Ty2*").
+has_type("{Ty2* Ty3 Ty3* i8 i8*}", "Ty3").
+has_type("{Ty2* Ty3 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2* i8}", "i8").
+append_type("{Ty1 Ty1* Ty2* i8}", "i8*", "{Ty1 Ty1* Ty2* i8 i8*}").
+has_type("{Ty1 Ty1* Ty2* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* i8}").
+has_type("{Ty1 Ty1* Ty2* i8}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2* i8}", "Ty3", "{Ty1 Ty1* Ty2* Ty3 i8}").
+append_type("{Ty1 Ty1* Ty2* i8}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3* i8}").
+append_type("{i8*}", "i8", "{i8 i8*}").
+has_type("{i8*}", "i8*").
+append_type("{i8*}", "Ty1", "{Ty1 i8*}").
+append_type("{i8*}", "Ty1*", "{Ty1* i8*}").
+append_type("{i8*}", "Ty2", "{Ty2 i8*}").
+append_type("{i8*}", "Ty2*", "{Ty2* i8*}").
+append_type("{i8*}", "Ty3", "{Ty3 i8*}").
+append_type("{i8*}", "Ty3*", "{Ty3* i8*}").
+append_type("{Ty1* Ty3 Ty3*}", "i8", "{Ty1* Ty3 Ty3* i8}").
+append_type("{Ty1* Ty3 Ty3*}", "i8*", "{Ty1* Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty3 Ty3*}", "Ty1", "{Ty1 Ty1* Ty3 Ty3*}").
+has_type("{Ty1* Ty3 Ty3*}", "Ty1*").
+append_type("{Ty1* Ty3 Ty3*}", "Ty2", "{Ty1* Ty2 Ty3 Ty3*}").
+append_type("{Ty1* Ty3 Ty3*}", "Ty2*", "{Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1* Ty3 Ty3*}", "Ty3*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "i8*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty1 Ty2 Ty2* Ty3 Ty3* i8}", "Ty3*").
+append_type("{Ty3 Ty3*}", "i8", "{Ty3 Ty3* i8}").
+append_type("{Ty3 Ty3*}", "i8*", "{Ty3 Ty3* i8*}").
+append_type("{Ty3 Ty3*}", "Ty1", "{Ty1 Ty3 Ty3*}").
+append_type("{Ty3 Ty3*}", "Ty1*", "{Ty1* Ty3 Ty3*}").
+append_type("{Ty3 Ty3*}", "Ty2", "{Ty2 Ty3 Ty3*}").
+append_type("{Ty3 Ty3*}", "Ty2*", "{Ty2* Ty3 Ty3*}").
+has_type("{Ty3 Ty3*}", "Ty3").
+has_type("{Ty3 Ty3*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty3* i8*}", "i8", "{Ty1 Ty1* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty1* Ty3* i8*}", "Ty1").
+has_type("{Ty1 Ty1* Ty3* i8*}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3* i8*}", "Ty2", "{Ty1 Ty1* Ty2 Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty3* i8*}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3* i8*}").
+append_type("{Ty1 Ty1* Ty3* i8*}", "Ty3", "{Ty1 Ty1* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty3* i8*}", "Ty3*").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "i8", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "i8*", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty3").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}", "Ty3*").
+has_type("{Ty1* Ty2* i8}", "i8").
+append_type("{Ty1* Ty2* i8}", "i8*", "{Ty1* Ty2* i8 i8*}").
+append_type("{Ty1* Ty2* i8}", "Ty1", "{Ty1 Ty1* Ty2* i8}").
+has_type("{Ty1* Ty2* i8}", "Ty1*").
+append_type("{Ty1* Ty2* i8}", "Ty2", "{Ty1* Ty2 Ty2* i8}").
+has_type("{Ty1* Ty2* i8}", "Ty2*").
+append_type("{Ty1* Ty2* i8}", "Ty3", "{Ty1* Ty2* Ty3 i8}").
+append_type("{Ty1* Ty2* i8}", "Ty3*", "{Ty1* Ty2* Ty3* i8}").
+append_type("{Ty1 Ty3* i8*}", "i8", "{Ty1 Ty3* i8 i8*}").
+has_type("{Ty1 Ty3* i8*}", "i8*").
+has_type("{Ty1 Ty3* i8*}", "Ty1").
+append_type("{Ty1 Ty3* i8*}", "Ty1*", "{Ty1 Ty1* Ty3* i8*}").
+append_type("{Ty1 Ty3* i8*}", "Ty2", "{Ty1 Ty2 Ty3* i8*}").
+append_type("{Ty1 Ty3* i8*}", "Ty2*", "{Ty1 Ty2* Ty3* i8*}").
+append_type("{Ty1 Ty3* i8*}", "Ty3", "{Ty1 Ty3 Ty3* i8*}").
+has_type("{Ty1 Ty3* i8*}", "Ty3*").
+has_type("{Ty1 Ty1* Ty3* i8}", "i8").
+append_type("{Ty1 Ty1* Ty3* i8}", "i8*", "{Ty1 Ty1* Ty3* i8 i8*}").
+has_type("{Ty1 Ty1* Ty3* i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty3* i8}", "Ty1*").
+append_type("{Ty1 Ty1* Ty3* i8}", "Ty2", "{Ty1 Ty1* Ty2 Ty3* i8}").
+append_type("{Ty1 Ty1* Ty3* i8}", "Ty2*", "{Ty1 Ty1* Ty2* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty3* i8}", "Ty3", "{Ty1 Ty1* Ty3 Ty3* i8}").
+has_type("{Ty1 Ty1* Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8}", "i8").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8}", "i8*", "{Ty1 Ty2 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8}", "Ty2*").
+has_type("{Ty1 Ty2 Ty2* Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty2 Ty2* Ty3 i8}", "Ty3*", "{Ty1 Ty2 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2 Ty2* Ty3*}", "i8", "{Ty1 Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1 Ty2 Ty2* Ty3*}", "i8*", "{Ty1 Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty2 Ty2* Ty3*}", "Ty1").
+append_type("{Ty1 Ty2 Ty2* Ty3*}", "Ty1*", "{Ty1 Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty1 Ty2 Ty2* Ty3*}", "Ty2").
+has_type("{Ty1 Ty2 Ty2* Ty3*}", "Ty2*").
+append_type("{Ty1 Ty2 Ty2* Ty3*}", "Ty3", "{Ty1 Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty2 Ty2* Ty3*}", "Ty3*").
+has_type("{Ty1* i8 i8*}", "i8").
+has_type("{Ty1* i8 i8*}", "i8*").
+append_type("{Ty1* i8 i8*}", "Ty1", "{Ty1 Ty1* i8 i8*}").
+has_type("{Ty1* i8 i8*}", "Ty1*").
+append_type("{Ty1* i8 i8*}", "Ty2", "{Ty1* Ty2 i8 i8*}").
+append_type("{Ty1* i8 i8*}", "Ty2*", "{Ty1* Ty2* i8 i8*}").
+append_type("{Ty1* i8 i8*}", "Ty3", "{Ty1* Ty3 i8 i8*}").
+append_type("{Ty1* i8 i8*}", "Ty3*", "{Ty1* Ty3* i8 i8*}").
+has_type("{Ty2* i8}", "i8").
+append_type("{Ty2* i8}", "i8*", "{Ty2* i8 i8*}").
+append_type("{Ty2* i8}", "Ty1", "{Ty1 Ty2* i8}").
+append_type("{Ty2* i8}", "Ty1*", "{Ty1* Ty2* i8}").
+append_type("{Ty2* i8}", "Ty2", "{Ty2 Ty2* i8}").
+has_type("{Ty2* i8}", "Ty2*").
+append_type("{Ty2* i8}", "Ty3", "{Ty2* Ty3 i8}").
+append_type("{Ty2* i8}", "Ty3*", "{Ty2* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2* Ty3}", "i8", "{Ty1 Ty1* Ty2* Ty3 i8}").
+append_type("{Ty1 Ty1* Ty2* Ty3}", "i8*", "{Ty1 Ty1* Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty1* Ty2* Ty3}", "Ty1").
+has_type("{Ty1 Ty1* Ty2* Ty3}", "Ty1*").
+append_type("{Ty1 Ty1* Ty2* Ty3}", "Ty2", "{Ty1 Ty1* Ty2 Ty2* Ty3}").
+has_type("{Ty1 Ty1* Ty2* Ty3}", "Ty2*").
+has_type("{Ty1 Ty1* Ty2* Ty3}", "Ty3").
+append_type("{Ty1 Ty1* Ty2* Ty3}", "Ty3*", "{Ty1 Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty2 i8 i8*}", "i8").
+has_type("{Ty1 Ty2 i8 i8*}", "i8*").
+has_type("{Ty1 Ty2 i8 i8*}", "Ty1").
+append_type("{Ty1 Ty2 i8 i8*}", "Ty1*", "{Ty1 Ty1* Ty2 i8 i8*}").
+has_type("{Ty1 Ty2 i8 i8*}", "Ty2").
+append_type("{Ty1 Ty2 i8 i8*}", "Ty2*", "{Ty1 Ty2 Ty2* i8 i8*}").
+append_type("{Ty1 Ty2 i8 i8*}", "Ty3", "{Ty1 Ty2 Ty3 i8 i8*}").
+append_type("{Ty1 Ty2 i8 i8*}", "Ty3*", "{Ty1 Ty2 Ty3* i8 i8*}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "i8", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8}").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "i8*", "{Ty1 Ty1* Ty2 Ty2* Ty3* i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "Ty2").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "Ty2*").
+append_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "Ty3", "{Ty1 Ty1* Ty2 Ty2* Ty3 Ty3*}").
+has_type("{Ty1 Ty1* Ty2 Ty2* Ty3*}", "Ty3*").
+has_type("{Ty1* Ty2 Ty3* i8 i8*}", "i8").
+has_type("{Ty1* Ty2 Ty3* i8 i8*}", "i8*").
+append_type("{Ty1* Ty2 Ty3* i8 i8*}", "Ty1", "{Ty1 Ty1* Ty2 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty3* i8 i8*}", "Ty1*").
+has_type("{Ty1* Ty2 Ty3* i8 i8*}", "Ty2").
+append_type("{Ty1* Ty2 Ty3* i8 i8*}", "Ty2*", "{Ty1* Ty2 Ty2* Ty3* i8 i8*}").
+append_type("{Ty1* Ty2 Ty3* i8 i8*}", "Ty3", "{Ty1* Ty2 Ty3 Ty3* i8 i8*}").
+has_type("{Ty1* Ty2 Ty3* i8 i8*}", "Ty3*").
+has_type("{Ty2* Ty3 Ty3* i8}", "i8").
+append_type("{Ty2* Ty3 Ty3* i8}", "i8*", "{Ty2* Ty3 Ty3* i8 i8*}").
+append_type("{Ty2* Ty3 Ty3* i8}", "Ty1", "{Ty1 Ty2* Ty3 Ty3* i8}").
+append_type("{Ty2* Ty3 Ty3* i8}", "Ty1*", "{Ty1* Ty2* Ty3 Ty3* i8}").
+append_type("{Ty2* Ty3 Ty3* i8}", "Ty2", "{Ty2 Ty2* Ty3 Ty3* i8}").
+has_type("{Ty2* Ty3 Ty3* i8}", "Ty2*").
+has_type("{Ty2* Ty3 Ty3* i8}", "Ty3").
+has_type("{Ty2* Ty3 Ty3* i8}", "Ty3*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8}", "i8").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8}", "i8*", "{Ty1 Ty1* Ty2 Ty3 i8 i8*}").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8}", "Ty1").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8}", "Ty1*").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8}", "Ty2").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8}", "Ty2*", "{Ty1 Ty1* Ty2 Ty2* Ty3 i8}").
+has_type("{Ty1 Ty1* Ty2 Ty3 i8}", "Ty3").
+append_type("{Ty1 Ty1* Ty2 Ty3 i8}", "Ty3*", "{Ty1 Ty1* Ty2 Ty3 Ty3* i8}").
+append_type("{Ty1 Ty2* Ty3 i8*}", "i8", "{Ty1 Ty2* Ty3 i8 i8*}").
+has_type("{Ty1 Ty2* Ty3 i8*}", "i8*").
+has_type("{Ty1 Ty2* Ty3 i8*}", "Ty1").
+append_type("{Ty1 Ty2* Ty3 i8*}", "Ty1*", "{Ty1 Ty1* Ty2* Ty3 i8*}").
+append_type("{Ty1 Ty2* Ty3 i8*}", "Ty2", "{Ty1 Ty2 Ty2* Ty3 i8*}").
+has_type("{Ty1 Ty2* Ty3 i8*}", "Ty2*").
+has_type("{Ty1 Ty2* Ty3 i8*}", "Ty3").
+append_type("{Ty1 Ty2* Ty3 i8*}", "Ty3*", "{Ty1 Ty2* Ty3 Ty3* i8*}").
+append_type("{Ty1* Ty2* Ty3*}", "i8", "{Ty1* Ty2* Ty3* i8}").
+append_type("{Ty1* Ty2* Ty3*}", "i8*", "{Ty1* Ty2* Ty3* i8*}").
+append_type("{Ty1* Ty2* Ty3*}", "Ty1", "{Ty1 Ty1* Ty2* Ty3*}").
+has_type("{Ty1* Ty2* Ty3*}", "Ty1*").
+append_type("{Ty1* Ty2* Ty3*}", "Ty2", "{Ty1* Ty2 Ty2* Ty3*}").
+has_type("{Ty1* Ty2* Ty3*}", "Ty2*").
+append_type("{Ty1* Ty2* Ty3*}", "Ty3", "{Ty1* Ty2* Ty3 Ty3*}").
+has_type("{Ty1* Ty2* Ty3*}", "Ty3*").
+append_type("{Ty2*}", "i8", "{Ty2* i8}").
+append_type("{Ty2*}", "i8*", "{Ty2* i8*}").
+append_type("{Ty2*}", "Ty1", "{Ty1 Ty2*}").
+append_type("{Ty2*}", "Ty1*", "{Ty1* Ty2*}").
+append_type("{Ty2*}", "Ty2", "{Ty2 Ty2*}").
+has_type("{Ty2*}", "Ty2*").
+append_type("{Ty2*}", "Ty3", "{Ty2* Ty3}").
+append_type("{Ty2*}", "Ty3*", "{Ty2* Ty3*}").
