@@ -94,6 +94,8 @@ firstPrimitiveTy(PtrPtrT, PrimPtrPtrT) :- elemOf(PtrPtrT, PtrT),
 //.output heapTypes()
 
 .decl heapField(h:heap, fld_ty:type)
+heapField(H, FldTy) :- RegPtsTo(_, H, FldTy).
+
 .decl allocFn(r:reg, h:heap)
 allocFn(R, H) :- alloca(_T, R, H).
 allocFn(R, H) :- malloc(_T, R, _N, H).
@@ -136,8 +138,11 @@ knownAllocSite(R, H) :- allocFn(R, H).
 knownAllocSite(R, H) :- RegPtsTo(R, H, _).
 
 RegPtsTo(R, H, T) :- RegPtsTo(SrcR, H, T), RegOrigin(R, SrcR).
-// RegPtsTo(R, H, "#") :- allocFn(R, H).
 RegPtsTo(R, H, T) :- allocFn(R, H), RegPtsTo(_, H, T).
+RegPtsTo(R, H, T) :- RegPtsTo(_, H, "i8"),
+                     RegPtsTo(_, H, T),
+                     RegPtsTo(R, H, _).
+
                    
 RegPtsTo(AccR, H, PrimT) :- memAccess(T, AccR), RegOrigin(AccR, R),
                             firstPrimitiveTy(T, PrimT),
