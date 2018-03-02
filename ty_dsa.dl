@@ -1,10 +1,7 @@
 .symbol_type reg
 .symbol_type heap
 .symbol_type type
-.symbol_type list
 .number_type num
-
-#define EmptyList "{}"
 
 // -- inputs --
 .decl alloca(t:type, r:reg, h:heap)
@@ -29,11 +26,7 @@ sizeOf(PtrT, 8) :- isPtrTy(PtrT).
 .decl class(name:type, num_fields:num)
 .decl field(class:type, ty:type, index:num)
 
-.decl append_type(in_list:list, ty:type, out_list:list)
-.decl has_type(ty_list:list, ty:type)
-
 #include "_current_test.dl"
-
 
 // -- debug info and helpers --
 
@@ -85,12 +78,13 @@ innerPrimitiveTy(T, InnT) :- typeAtOffset(T, InnT, _),
 .decl firstPrimitiveTy(ty:type, fty:type)
 firstPrimitiveTy(T, T) :- isPrimitive(T), !isPtrTy(T).
 firstPrimitiveTy(T, PrimInnT) :- !isPrimitive(T), !isPtrTy(T),
-                             typeAtOffset(T, InnT, 0),
-                             firstPrimitiveTy(InnT, PrimInnT).
+                                 typeAtOffset(T, InnT, 0),
+                                 firstPrimitiveTy(InnT, PrimInnT).
 
 firstPrimitiveTy(PtrT, PrimPtrT) :- elemOf(PtrT, T), !isPtrTy(T),
                                     firstPrimitiveTy(T, PrimT),
                                     ptrOf(PrimT, PrimPtrT).
+
 firstPrimitiveTy(PtrPtrT, PrimPtrPtrT) :- elemOf(PtrPtrT, PtrT),
                                           firstPrimitiveTy(PtrT, PrimPtrT),
                                           ptrOf(PrimPtrT, PrimPtrPtrT).
@@ -113,7 +107,7 @@ memAccess(ValT, SrcR) :- store(ValT, _, _SrcT, SrcR).
 .decl RegOrigin(r:reg, origin:reg)
 
 // Register points to a field of a given type in a given heap.
-.decl RegPtsTo(r:reg, h:heap, tys:list)
+.decl RegPtsTo(r:reg, h:heap, ty:type)
 
 // A field of a given type points to another field in a given heap,
 // of a given type. source field type is type*. 
@@ -136,50 +130,38 @@ RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
                        RegOrigin(R2, SrcR2).
 RegOrigin(R, Src) :- bitcast(_, R, _, R2), RegOrigin(R2, Src).
 
-RegPtsTo(R, H, TL) :- RegPtsTo(SrcR, H, TL), RegOrigin(R, SrcR).
-RegPtsTo(R, H, EmptyList) :- allocFn(R, H).
+
+.decl knownAllocSite(r:reg, h:heap)
+knownAllocSite(R, H) :- allocFn(R, H).
+knownAllocSite(R, H) :- RegPtsTo(R, H, _).
+
+RegPtsTo(R, H, T) :- RegPtsTo(SrcR, H, T), RegOrigin(R, SrcR).
+// RegPtsTo(R, H, "#") :- allocFn(R, H).
+RegPtsTo(R, H, T) :- allocFn(R, H), RegPtsTo(_, H, T).
                    
-RegPtsTo(AccR, H, OTL) :- memAccess(T, AccR), RegOrigin(AccR, R),
-                          RegPtsTo(R, H, OTL), 
-                          firstPrimitiveTy(T, PTy),
-                          has_type(OTL, PTy).
+RegPtsTo(AccR, H, PrimT) :- memAccess(T, AccR), RegOrigin(AccR, R),
+                            firstPrimitiveTy(T, PrimT),
+                            knownAllocSite(R, H).
 
-RegPtsTo(AccR, cat(H, "'"), NTL) :- 
-                          memAccess(T, AccR), RegOrigin(AccR, R),
-                          RegPtsTo(R, H, OTL),
-                          firstPrimitiveTy(T, PTy),
-                          append_type(OTL, PTy, NTL).
-
-RegPtsTo(FldR, H, FTL) :- gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
+RegPtsTo(FldR, H, PrimFldTy) :- 
+                          gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
                           elemOf(FldPtrT, FldTy), 
                           firstPrimitiveTy(FldTy, PrimFldTy),
                           RegOrigin(SrcR, OrigR),
-                          RegPtsTo(OrigR, H, OTL),
-                          has_type(OTL, PrimFldTy),
-                          append_type(EmptyList, PrimFldTy, FTL).
+                          knownAllocSite(OrigR, H).
 
-RegPtsTo(FldR, cat(H, "'"), FTL),
-RegPtsTo(OrigR, cat(H, "'"), NewTL) :- 
-                        gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
-                        elemOf(FldPtrT, FldTy), 
-                        firstPrimitiveTy(FldTy, PrimFldTy),
-                        RegOrigin(SrcR, OrigR),
-                        RegPtsTo(OrigR, H, OTL),
-                        append_type(OTL, PrimFldTy, NewTL),
-                        append_type(EmptyList, PrimFldTy, FTL).
-
-RegPtsTo(LdR, H2, FTL) :- load(PtrT, LdR, _, SrcR), isPtrTy(PtrT),
+RegPtsTo(LdR, H2, PrimPtrT) :- 
+                          load(PtrT, LdR, _, SrcR), isPtrTy(PtrT),
                           firstPrimitiveTy(PtrT, PrimPtrT),
-                          RegPtsTo(SrcR, H1, _),
-                          FldPtsTo(H1, _, H2, _),
-                          append_type(EmptyList, PrimPtrT, FTL).
+                          knownAllocSite(SrcR, H1),
+                          FldPtsTo(H1, _, H2, _).
 
 FldPtsTo(H1, PrimDstPtrTy, H2, PrimValPtrTy) :- 
-                        store(ValPtrTy, Val, DstPtrTy, Dst),
-                        firstPrimitiveTy(ValPtrTy, PrimValPtrTy),
-                        firstPrimitiveTy(DstPtrTy, PrimDstPtrTy),
-                        RegPtsTo(Val, H2, _SrcTy),
-                        RegPtsTo(Dst, H1, _DstTy).
+                          store(ValPtrTy, Val, DstPtrTy, Dst),
+                          firstPrimitiveTy(ValPtrTy, PrimValPtrTy),
+                          firstPrimitiveTy(DstPtrTy, PrimDstPtrTy),
+                          knownAllocSite(Val, H2),
+                          knownAllocSite(Dst, H1).
 
 
 

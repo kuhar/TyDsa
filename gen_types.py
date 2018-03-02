@@ -68,20 +68,20 @@ for t in types:
     print()
 
 
-all_types = []
-for t in primitive_types:
-    all_types.append(t)
-    all_types.append(t.add_ptr())
-
-ps = set(powerset(all_types))
-for p in ps:
-    for t in all_types:
-        sorter = lambda ty: ty.name
-        tys = sorted(p, key=sorter)
-        if t not in p:
-            with_t = sorted(p + (t, ), key=sorter)
-            print('append_type(\"' + to_ty_list(tys) + '\", \"' + t.name + '\", \"' + to_ty_list(with_t) + '\").')
-        else:
-            print('has_type(\"' + to_ty_list(tys) + '\", \"' + t.name + '\").')
+# all_types = []
+# for t in primitive_types:
+#     all_types.append(t)
+#     all_types.append(t.add_ptr())
+#
+# ps = set(powerset(all_types))
+# for p in ps:
+#     for t in all_types:
+#         sorter = lambda ty: ty.name
+#         tys = sorted(p, key=sorter)
+#         if t not in p:
+#             with_t = sorted(p + (t, ), key=sorter)
+#             print('append_type(\"' + to_ty_list(tys) + '\", \"' + t.name + '\", \"' + to_ty_list(with_t) + '\").')
+#         else:
+#             print('has_type(\"' + to_ty_list(tys) + '\", \"' + t.name + '\").')
 
 
