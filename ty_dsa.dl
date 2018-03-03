@@ -169,6 +169,33 @@ FldPtsTo(H1, PrimDstPtrTy, H2, PrimValPtrTy) :-
                           knownAllocSite(Dst, H1).
 
 
+.decl OffRegPtsTo(r:reg, h:heap, off:num)
+.decl OffFldPtsTo(h1:heap, off1:num, h2:heap, off2:num)
+
+OffRegPtsTo(R, H, 0) :- allocFn(R, H).
+OffRegPtsTo(R, H, Off) :- bitcast(_, R, _, SrcR),
+                          OffRegPtsTo(SrcR, H, Off).
+OffRegPtsTo(R, H, Off2 - FSz) :- gep(FldPtrTy, R, StrPtrTy, SrcR, N),
+                                 OffRegPtsTo(SrcR, H, Off),
+                                 elemOf(FldPtrTy, FldTy),
+                                 elemOf(StrPtrTy, StrTy),
+                                 sizeOfClass_n(StrTy, N, Off2),
+                                 sizeOf(FldTy, FSz).
+
+OffRegPtsTo(R, H2, Off2) :- load(PtrT, R, _, SrcR),
+                            OffRegPtsTo(SrcR, H1, Off), 
+                            OffFldPtsTo(H1, Off, H2, Off2).
+OffRegPtsTo(R, H2, Off2) :- phi(_, R, R1, R2),
+                            OffRegPtsTo(R1, H1, Off1),
+                            OffRegPtsTo(R2, H2, Off2).
+
+OffFldPtsTo(H1, O1, H2, O2) :- store(_, ValR, _, DestR),
+                               OffRegPtsTo(ValR, H2, O2),
+                               OffRegPtsTo(SrcR, H1, O1).
+
+.output OffRegPtsTo()
+.output OffFldPtsTo()
+
 
 // [Debug] Dump tables.
 //.output sizeOf()
