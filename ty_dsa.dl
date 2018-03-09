@@ -195,7 +195,7 @@ OffRegPtsTo(R, H2, Off2)  :- phi(_, R, R1, R2),
 
 OffFldPtsTo(H1, O1, H2, O2) :- store(_, ValR, _, DestR),
                                OffRegPtsTo(ValR, H2, O2),
-                               OffRegPtsTo(SrcR, H1, O1).
+                               OffRegPtsTo(DestR, H1, O1).
 
 .output OffRegPtsTo()
 .output OffFldPtsTo()

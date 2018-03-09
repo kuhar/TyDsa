@@ -1,0 +1,44 @@
+#include "common_types.dl"
+
+// Ty1 h0_int;
+// Ty1 h1_int;
+// Ty3 h2_vtbl;
+
+// i8 *r3 = malloc(sizeof(Bam));
+// Bam *r4 = (Bam *) r3;
+// r4->vptr = &h2_vtbl;
+// r4->fld1 = &h0_int;
+// r4->fld2 = &h1_int;
+
+// i8 *r8 = malloc(sizeof(LLItem));
+// LLItem *r9 = (LLItem *) r8;
+// r9->next = r9;
+// r9->fld0 = nd() ? &(r4->fld1) : &(r4->fld2);
+// Ty1 *r13 = r9->next;
+// Ty3* r14 = r4->vptr;
+
+
+alloca("Ty1*", "r0", "h0_int").           // int
+alloca("Ty1*", "r1", "h1_int").           // int
+alloca("Ty3*", "r2", "h2_vtbl").          // vtable
+malloc("i8*", "r3", 24, "h3_foo").        // Bam obj
+bitcast("Bam*", "r4", "i8*", "r3").
+
+gep("Ty3**", "r5", "Bam*", "r4", 0).
+store("Ty3*", "r2", "Ty3**", "r5").
+gep("Ty1**", "r6", "Bam*", "r4", 1).
+store("Ty1*", "r0", "Ty1**", "r6").
+gep("Ty1**", "r7", "Bam*", "r4", 2).
+store("Ty1*", "r1", "Ty1**", "r7").
+
+malloc("i8*", "r8", 16, "h_ll").           // LLItem
+bitcast("LLItem*", "r9", "i8*", "r8").
+gep("LLItem**", "r10", "LLItem*", "r9", 1).
+store("LLItem*", "r9", "LLItem**", "r10"). // p->next = p
+
+phi("Ty1**", "r11", "r6", "r7").
+gep("Ty1***", "r12", "LLItem*", "r9", 0).
+store("Ty1**", "r11", "Ty1***", "r12").
+
+load("Ty1**", "r13", "Ty1***", "r12").
+load("Ty3*", "r14", "Ty3**", "r5").
