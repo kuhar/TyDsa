@@ -19,6 +19,7 @@ class Type:
         print('ptrOf(\"' + self.name + '\", \"' + self.name + '*\").')
         print('ptrOf(\"' + self.name + '*\", \"' + self.name + '**\").')
         print('ptrOf(\"' + self.name + '**\", \"' + self.name + '***\").')
+        print('ptrOf(\"' + self.name + '***\", \"' + self.name + '****\").')
 
 
     def is_primitive(self):

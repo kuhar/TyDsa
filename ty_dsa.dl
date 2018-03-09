@@ -125,8 +125,8 @@ HeapPtsTo(H1, H2) :- FldPtsTo(H1, _, H2, _).
 RegOrigin(R, R) :- alloca(_, R, _).
 RegOrigin(R, R) :- malloc(_, R, _, _).
 RegOrigin(R, R) :- load(T, R, _, _), isPtrTy(T).
-RegOrigin(R, R) :- gep(_, R, _, _SrcR, N), N != 0.
-RegOrigin(R, SrcR) :- gep(_, R, _, SrcR, 0).
+RegOrigin(R, R) :- gep(_, R, _, _SrcR, N). //, N != 0.
+// RegOrigin(R, SrcR) :- gep(_, R, _, SrcR, 0).
 RegOrigin(R, SrcR1),
 RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
                        RegOrigin(R1, SrcR1),
@@ -150,7 +150,7 @@ RegPtsTo(AccR, H, PrimT) :- memAccess(T, AccR), RegOrigin(AccR, R),
                             knownAllocSite(R, H).
 
 RegPtsTo(FldR, H, PrimFldTy) :- 
-                          gep(FldPtrT, FldR, SrcTy, SrcR, N), N != 0,
+                          gep(FldPtrT, FldR, SrcTy, SrcR, N), // N != 0,
                           elemOf(FldPtrT, FldTy), 
                           firstPrimitiveTy(FldTy, PrimFldTy),
                           RegOrigin(SrcR, OrigR),
@@ -160,7 +160,7 @@ RegPtsTo(LdR, H2, PrimPtrT) :-
                           load(PtrT, LdR, _, SrcR), isPtrTy(PtrT),
                           firstPrimitiveTy(PtrT, PrimPtrT),
                           knownAllocSite(SrcR, H1),
-                          FldPtsTo(H1, _, H2, _).
+                          FldPtsTo(H1, PrimPtrT, H2, _).
 
 FldPtsTo(H1, PrimDstTy, H2, PrimValTy) :- 
                           store(ValPtrTy, Val, DstPtrTy, Dst),
@@ -206,6 +206,7 @@ OffFldPtsTo(H1, O1, H2, O2) :- store(_, ValR, _, DestR),
 //.output field()
 //.output sizeOfClass_n()
 //.output typeAtOffset()
+.output knownAllocSite()
 .output heapField()
 .output RegOrigin() 
 .output RegPtsTo()
