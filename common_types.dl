@@ -1,22 +1,27 @@
 sizeOf("i8", 1).
 ptrOf("i8", "i8*").
 ptrOf("i8*", "i8**").
+ptrOf("i8**", "i8***").
 
 sizeOf("Ty1", 4).
 ptrOf("Ty1", "Ty1*").
 ptrOf("Ty1*", "Ty1**").
+ptrOf("Ty1**", "Ty1***").
 
 sizeOf("Ty2", 2).
 ptrOf("Ty2", "Ty2*").
 ptrOf("Ty2*", "Ty2**").
+ptrOf("Ty2**", "Ty2***").
 
 sizeOf("Ty3", 12).
 ptrOf("Ty3", "Ty3*").
 ptrOf("Ty3*", "Ty3**").
+ptrOf("Ty3**", "Ty3***").
 
 sizeOf("Foo", 14).
 ptrOf("Foo", "Foo*").
 ptrOf("Foo*", "Foo**").
+ptrOf("Foo**", "Foo***").
 class("Foo", 3).
 field("Foo", "Ty1", 0).
 field("Foo", "Ty2", 1).
@@ -25,6 +30,7 @@ field("Foo", "Ty1*", 2).
 sizeOf("Bar", 24).
 ptrOf("Bar", "Bar*").
 ptrOf("Bar*", "Bar**").
+ptrOf("Bar**", "Bar***").
 class("Bar", 3).
 field("Bar", "Ty1*", 0).
 field("Bar", "Ty2*", 1).
@@ -33,16 +39,26 @@ field("Bar", "Ty3*", 2).
 sizeOf("Baz", 20).
 ptrOf("Baz", "Baz*").
 ptrOf("Baz*", "Baz**").
+ptrOf("Baz**", "Baz***").
 class("Baz", 3).
 field("Baz", "Ty1*", 0).
 field("Baz", "Ty1", 1).
 field("Baz", "Ty1*", 2).
 
-sizeOf("Bam", 26).
+sizeOf("Bam", 24).
 ptrOf("Bam", "Bam*").
 ptrOf("Bam*", "Bam**").
+ptrOf("Bam**", "Bam***").
 class("Bam", 3).
-field("Bam", "Foo", 0).
-field("Bam", "Ty3*", 1).
-field("Bam", "Ty1", 2).
+field("Bam", "Ty3*", 0).
+field("Bam", "Ty1*", 1).
+field("Bam", "Ty1*", 2).
+
+sizeOf("LLItem", 16).
+ptrOf("LLItem", "LLItem*").
+ptrOf("LLItem*", "LLItem**").
+ptrOf("LLItem**", "LLItem***").
+class("LLItem", 2).
+field("LLItem", "Ty1**", 0).
+field("LLItem", "LLItem*", 1).
 

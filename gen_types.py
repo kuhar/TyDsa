@@ -18,6 +18,8 @@ class Type:
         print('sizeOf(\"' + self.name + '\", ' + str(self.size) + ').')
         print('ptrOf(\"' + self.name + '\", \"' + self.name + '*\").')
         print('ptrOf(\"' + self.name + '*\", \"' + self.name + '**\").')
+        print('ptrOf(\"' + self.name + '**\", \"' + self.name + '***\").')
+
 
     def is_primitive(self):
         return True
@@ -58,10 +60,11 @@ Ty3 = Type("Ty3", 12)
 Foo = Struct("Foo", [Ty1, Ty2, Ty1.add_ptr()])
 Bar = Struct("Bar", [Ty1.add_ptr(), Ty2.add_ptr(), Ty3.add_ptr()])
 Baz = Struct("Baz", [Ty1.add_ptr(), Ty1, Ty1.add_ptr()])
-Bam = Struct("Bam", [Foo, Ty3.add_ptr(), Ty1])
+Bam = Struct("Bam", [Ty3.add_ptr(), Ty1.add_ptr(), Ty1.add_ptr()])
+LLItem = Struct("LLItem", [Ty1.add_ptr().add_ptr(), Ty2.add_ptr()])
 
 primitive_types = [i8, Ty1, Ty2, Ty3]
-types = [i8, Ty1, Ty2, Ty3, Foo, Bar, Baz, Bam]
+types = [i8, Ty1, Ty2, Ty3, Foo, Bar, Baz, Bam, LLItem]
 
 for t in types:
     t.dump()

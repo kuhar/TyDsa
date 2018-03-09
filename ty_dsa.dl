@@ -85,9 +85,10 @@ firstPrimitiveTy(PtrT, PrimPtrT) :- elemOf(PtrT, T), !isPtrTy(T),
                                     firstPrimitiveTy(T, PrimT),
                                     ptrOf(PrimT, PrimPtrT).
 
-firstPrimitiveTy(PtrPtrT, PrimPtrPtrT) :- elemOf(PtrPtrT, PtrT),
+firstPrimitiveTy(PtrPtrT, PrimPtrPtrT) :- elemOf(PtrPtrT, PtrT), isPtrTy(PtrT),
                                           firstPrimitiveTy(PtrT, PrimPtrT),
                                           ptrOf(PrimPtrT, PrimPtrPtrT).
+
 .output firstPrimitiveTy()
 
 //.decl heapTypes(h:heap, tys:type_list)
@@ -161,10 +162,12 @@ RegPtsTo(LdR, H2, PrimPtrT) :-
                           knownAllocSite(SrcR, H1),
                           FldPtsTo(H1, _, H2, _).
 
-FldPtsTo(H1, PrimDstPtrTy, H2, PrimValPtrTy) :- 
+FldPtsTo(H1, PrimDstTy, H2, PrimValTy) :- 
                           store(ValPtrTy, Val, DstPtrTy, Dst),
                           firstPrimitiveTy(ValPtrTy, PrimValPtrTy),
                           firstPrimitiveTy(DstPtrTy, PrimDstPtrTy),
+                          elemOf(PrimValPtrTy, PrimValTy),
+                          elemOf(PrimDstPtrTy, PrimDstTy),
                           knownAllocSite(Val, H2),
                           knownAllocSite(Dst, H1).
 
@@ -185,7 +188,8 @@ OffRegPtsTo(R, H, Off2 - FSz) :- gep(FldPtrTy, R, StrPtrTy, SrcR, N),
 OffRegPtsTo(R, H2, Off2) :- load(PtrT, R, _, SrcR),
                             OffRegPtsTo(SrcR, H1, Off), 
                             OffFldPtsTo(H1, Off, H2, Off2).
-OffRegPtsTo(R, H2, Off2) :- phi(_, R, R1, R2),
+OffRegPtsTo(R, H1, Off1),
+OffRegPtsTo(R, H2, Off2)  :- phi(_, R, R1, R2),
                             OffRegPtsTo(R1, H1, Off1),
                             OffRegPtsTo(R2, H2, Off2).
 

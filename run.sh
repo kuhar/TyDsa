@@ -8,4 +8,5 @@ if [ $? -ne 0 ] ; then
 	exit -1
 fi
 
-souffle ty_dsa.dl -D- -v
+souffle ty_dsa.dl -D- -v && souffle ty_dsa.dl -D./out -v >/dev/null 2>&1
+
