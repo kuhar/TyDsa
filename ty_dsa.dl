@@ -137,6 +137,12 @@ RegOrigin(R, Src) :- bitcast(_, R, _, R2), RegOrigin(R2, Src).
 knownAllocSite(R, H) :- allocFn(R, H).
 knownAllocSite(R, H) :- RegPtsTo(R, H, _).
 
+.decl originatesAtAlloc(r:reg)
+originatesAtAlloc(R) :- RegOrigin(R, SrcR), 
+                        allocFn(SrcR, _), !phi(_, R, _, _).
+
+.output originatesAtAlloc()
+
 RegPtsTo(R, H, T) :- RegPtsTo(SrcR, H, T), RegOrigin(R, SrcR).
 RegPtsTo(R, H, T) :- allocFn(R, H), RegPtsTo(_, H, T).
 RegPtsTo(R, H, T) :- RegPtsTo(_, H, "i8"),
@@ -184,8 +190,12 @@ RegPtsTo(R, H1, T2) :- RegPtsTo(R, H1, _T1), RegPtsTo(R, _H2, T2).
 // R2 --> <H1, T1>
 // ---------------------------------
 // R2 --> <H2, T2>
-RegPtsTo(R2, H2, T2) :- RegPtsTo(R1, H1, T1), RegPtsTo(R1, H2, T2),
-                        RegPtsTo(R2, H1, T1).
+RegPtsTo(R2, H2, T2) :- RegPtsTo(R1, H1, T1), RegPtsTo(R1, H2, T2), 
+                        RegPtsTo(R2, H1, T1), H1 != H2.
+
+RegPtsTo(R2, H1, T2) :- RegPtsTo(R1, H1, T1), RegPtsTo(R1, H1, T2), 
+                        RegPtsTo(R2, H1, T1), !originatesAtAlloc(R1).
+
 
 // H1 --> H2
 // H3 --> H2, H3 --> H4
