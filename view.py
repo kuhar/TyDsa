@@ -87,19 +87,17 @@ def main():
     reg_to_heap = sorted(reg_to_heap, key=lambda x: x[0])
 
     for reg, heap, ty in reg_to_heap:
-        if (reg, heap) in opaqueEdges:
-            s.attr('edge', color='turquoise')
-        else:
-            s.attr('edge', color='black')
+        color = 'turquoise' if (reg, heap) in opaqueEdges else 'black'
         s.edge(reg,
-               heap + ':f' + str(type_to_idx[ty]))
+               heap + ':f' + str(type_to_idx[ty]),
+               color=color)
 
-    s.attr('edge', color='black')
     heap_to_heap = sorted(heap_to_heap, key=lambda x: (x[0], x[2]))
 
     for h1, ty1, h2, ty2 in heap_to_heap:
         s.edge(h1 + ':f' + str(type_to_idx[ty1]),
-               h2 + ':f' + str(type_to_idx[ty2]))
+               h2 + ':f' + str(type_to_idx[ty2]),
+               color='black')
 
     display(s)
 
