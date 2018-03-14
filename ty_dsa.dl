@@ -193,8 +193,13 @@ RegPtsTo(R, H1, T2) :- RegPtsTo(R, H1, _T1), RegPtsTo(R, _H2, T2).
 RegPtsTo(R2, H2, T2) :- RegPtsTo(R1, H1, T1), RegPtsTo(R1, H2, T2), 
                         RegPtsTo(R2, H1, T1), H1 != H2.
 
-RegPtsTo(R2, H1, T2) :- RegPtsTo(R1, H1, T1), RegPtsTo(R1, H1, T2), 
-                        RegPtsTo(R2, H1, T1), !originatesAtAlloc(R1).
+// Collapse rule.
+.decl Collapse(r:reg, h:heap, t:type) // Debug rule.
+.output Collapse()
+RegPtsTo(R2, H1, T2),
+Collapse(R1, H1, T2) :- RegPtsTo(R1, H1, T1), RegPtsTo(R1, H1, T2), 
+                        T1 != T2, !originatesAtAlloc(R1),
+                        RegPtsTo(R2, H1, _).
 
 
 // H1 --> H2
@@ -220,6 +225,12 @@ FldPtsTo(H4, PtrTy, H3, ValTy) :- FldPtsTo(H1, PtrTy, H2, ValTy),
 FldPtsTo(H2, PtrTy, H3, ValTy) :- RegPtsTo(R, H1, PtrTy),
                                   RegPtsTo(R, H2, PtrTy),
                                   FldPtsTo(H1, PtrTy, H3, ValTy).
+
+// Collapse rule.
+FldPtsTo(H3, PtrTy2, H2, Ty2) :-  FldPtsTo(H1, PtrTy1, H2, Ty1),
+                                  FldPtsTo(H1, PtrTy2, H2, Ty2),
+                                  Ty1 != Ty2,
+                                  FldPtsTo(H3, _, H2, _).
 
 
 .decl OffRegPtsTo(r:reg, h:heap, off:num)
