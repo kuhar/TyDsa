@@ -19,6 +19,7 @@ def main():
     reg_to_heap = []
     heap_to_heap = []
     heap_to_types = {}
+    opaqueEdges = set()
 
     with open("./out/RegPtsTo.csv") as reg_pts:
         reader = csv.reader(reg_pts, delimiter='\t')
@@ -46,6 +47,12 @@ def main():
                     type_idx += 1
 
             heap_to_heap.append((h1, ty1, h2, ty2))
+
+    with open("./out/opaqueEdge.csv") as reg_pts:
+        reader = csv.reader(reg_pts, delimiter='\t')
+        for row in reader:
+            r, h = row[0], row[1]
+            opaqueEdges.add((r, h))
 
     for _, heap, ty in reg_to_heap:
         if heap not in heap_to_types:
@@ -80,9 +87,14 @@ def main():
     reg_to_heap = sorted(reg_to_heap, key=lambda x: x[0])
 
     for reg, heap, ty in reg_to_heap:
+        if (reg, heap) in opaqueEdges:
+            s.attr('edge', color='turquoise')
+        else:
+            s.attr('edge', color='black')
         s.edge(reg,
                heap + ':f' + str(type_to_idx[ty]))
 
+    s.attr('edge', color='black')
     heap_to_heap = sorted(heap_to_heap, key=lambda x: (x[0], x[2]))
 
     for h1, ty1, h2, ty2 in heap_to_heap:

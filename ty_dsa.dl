@@ -233,6 +233,11 @@ FldPtsTo(H3, PtrTy2, H2, Ty2) :-  FldPtsTo(H1, PtrTy1, H2, Ty1),
                                   FldPtsTo(H3, _, H2, _).
 
 
+.decl opaqueEdge(r:reg, h:heap)
+opaqueEdge(R, H) :- knownAllocSite(R, H), originatesAtAlloc(R).
+.output opaqueEdge()
+
+
 .decl OffRegPtsTo(r:reg, h:heap, off:num)
 .decl OffFldPtsTo(h1:heap, off1:num, h2:heap, off2:num)
 
