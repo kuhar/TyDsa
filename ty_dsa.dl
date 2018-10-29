@@ -12,8 +12,8 @@
 .decl bitcast(to_ty:type, r:reg, val_ty:type, val:reg)
 .decl gep(t:type, r:reg, src_ty:type, src:reg, idx:num)
 .decl phi(t:type, r:reg, src_a:reg, src_b:reg)
-.decl fn(f:fun, arg0:reg, arg1:reg)
-.decl call(t:type, r:reg, f:fun, par0:reg, par1:reg)
+.decl fn(f:fun, arg_ty:type, arg:reg)
+.decl call(t:type, r:reg, f:fun, par_ty:type, par:reg)
 .decl return(t:type, r:reg, f:fun)
 
 // True iff ptr_ty is src_ty*
@@ -44,8 +44,9 @@ register(DestR, DestT) :- store(ValT, ValR, DestT, DestR).
 register(R, T) :- bitcast(T, R, _,  _).
 register(R, T) :- gep(T, R, _, _, _).
 register(R, T) :- phi(T, R, _, _).
-register(R, T) :- call1(T, R, _, _).
-register(R, T) :- call2(T, R, _, _, _).
+register(R, T) :- call(T, R, _, _, _).
+register(R, T) :- return(T, R, _).
+register(R, T) :- fn(_, T, R).
 //.output register()
 
 // [Debug] track all heap objects.
@@ -138,7 +139,10 @@ RegOrigin(R, SrcR2) :- phi(T, R, R1, R2), isPtrTy(T),
                        RegOrigin(R1, SrcR1),
                        RegOrigin(R2, SrcR2).
 RegOrigin(R, Src) :- bitcast(_, R, _, R2), RegOrigin(R2, Src).
-RegOrigin(R, Src) :- call1(_, R)
+RegOrigin(R, SrcR) :- call(_T, R, F, _ParT, _ParamR), return(_, RetR, F),
+                      RegOrigin(RetR, SrcR).
+RegOrigin(ArgR, SrcR) :- call(_, _, F, ParT, ParamR),
+                         fn(F, ParT, ArgR), RegOrigin(ParamR, SrcR). 
 
 .decl knownAllocSite(r:reg, h:heap)
 knownAllocSite(R, H) :- allocFn(R, H).
@@ -155,7 +159,6 @@ RegPtsTo(R, H, T) :- allocFn(R, H), RegPtsTo(_, H, T).
 RegPtsTo(R, H, T) :- RegPtsTo(_, H, "i8"),
                      RegPtsTo(_, H, T),
                      RegPtsTo(R, H, _).
-
                    
 RegPtsTo(AccR, H, PrimT) :- memAccess(T, AccR), RegOrigin(AccR, R),
                             firstPrimitiveTy(T, PrimT),
@@ -184,6 +187,31 @@ FldPtsTo(H1, PrimDstTy, H2, PrimValTy) :-
                           knownAllocSite(Val, H2),
                           knownAllocSite(Dst, H1).
 
+
+// Function calls:
+// void foo(/*T val*/) {
+//    T* val_ptr = alloca T;
+//    int *x = val->x; 
+//}
+
+// char* access
+// T* val = alloca T // H
+// val->ptr = PTR; // Ptr* // H [ Ptr* ] 
+// ...                             \--> H2 [ PtrT ]
+// i8* ptr = &(val->ptr);  // H    [ Ptr* | i8* ]
+// *ptr = ptr2; // H3                |         \
+// ...                             H2  [ PtrT ] \--> H3 [ i8 ] 
+// val->ptr ---> H3
+ 
+
+// struct S { T* ptr1; U* ptr2; };
+// T t; // HT [ T | U ]
+// S obj;
+// S.ptr1 = &t;
+// S.ptr2 = (U*) &t;
+// ...
+// U* p = S.ptr2;
+// T t2 = *(T*) p; HT [ T ]
 
 // Steensgaard
 
