@@ -1,0 +1,18 @@
+// Andersen, language w/o fields
+
+.decl alloca(t:type, r:reg, h:heap)
+.decl load(res_ty:type, r:reg, from_ty:type, from:reg)
+.decl store(val_ty:type, val:reg, dest_ty:type, dest:reg)
+.decl phi(t:type, r:reg, src_a:reg, src_b:reg)
+
+.decl RegPtsTo(r:reg, h:heap)
+.decl ObjPtsTo(h_src:heap, h_dst:heap)
+
+RegPtsTo(R, H) :- alloca(_, R, H).
+RegPtsTo(R, H2) :- load(T, R, SrcT, SrcR), RegPts(SrcR, H),
+                   ObjPtsTo(H, H2), isPtrTy(T).
+ObjPtsTo(H2, H) :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
+                   RegPtsTo(Ptr, H), RegPtsTo(DstR, H2).
+
+RegPtsTo(R, H) :- phi(T, R, Src1, Src2), RegPtsTo(Src1, H).
+RegPtsTo(R, H) :- phi(T, R, Src1, Src2), RegPtsTo(Src2, H).

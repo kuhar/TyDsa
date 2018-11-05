@@ -1,0 +1,25 @@
+// Andersen, language w/ fields and ptrs to fields
+
+.decl alloca(t:type, r:reg, h:heap)
+.decl load(res_ty:type, r:reg, from_ty:type, from:reg)
+
+.decl store(val_ty:type, val:reg, dest_ty:type, dest:reg)
+.decl phi(t:type, r:reg, src_a:reg, src_b:reg)
+.decl gep(t:type, r:reg, src_r:reg, f:field)
+
+.decl RegPtsToFld(r:reg, h:heap, f:field)
+.decl FldPtsToFld(h_src:heap, f_src:field, h_dst:heap, f_dst:field)
+
+RegPtsToFld(R, H, ZERO) :- alloca(_, R, H).
+
+RegPtsToFld(R, H, F) :- phi(T, R, Src1, Src2), RegPtsToFld(Src1, H, F).
+RegPtsToFld(R, H, F) :- phi(T, R, Src1, Src2), RegPtsToFld(Src2, H, F).
+
+RegPtsToFld(R, H, F) :- gep(_, R, SrcR, F), RegPtsToFld(SrcR, H, _).
+
+RegPtsToFld(R, H2, F) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H, F),
+                         FldPtsToObj(H, F, H2), isPtrTy(T).
+
+FldPtsToFld(H2, F2, H1, F1) :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
+                         RegPtsToFld(Ptr, H1, F1), RegPtsTo(DstR, H2, F2).
+
