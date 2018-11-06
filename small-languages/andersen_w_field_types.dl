@@ -1,9 +1,7 @@
 // Andersen, language w/ types and no offsets
 
-// TODO: what does DSA say about overlapping writers/reads of fields?
 // Assumption: in concrete semantics, a write that overlaps many fields is not allowed
 // Alternative assumption: overlapping write doesn't create new legal pointers
-
 // Restriction: load of a pointer must read from a properly typed memory
 
 .decl alloca(t:type, r:reg, h:heap)
@@ -13,38 +11,39 @@
 .decl assign(t:type, r:reg, src_a:reg)
 .decl gep(t:type, r:reg, src_r:reg, f:field)
 
+.decl RegPtsToObj(r:reg, h:heap)
 .decl RegPtsToFld(r:reg, h:heap, f:field)
+.decl ObjPtsToObj(h_src:heap, h_dst:heap)
+.decl FldPtsToObj(h_src:heap, f_src:field, h_dst:heap)
+.decl ObjPtsToFld(h_src:heap, h_dst:heap, f_dst:field)
 .decl FldPtsToFld(h_src:heap, f_src:field, h_dst:heap, f_dst:field)
 
-
-// RegPtrsObj(R, H) :- RegPtsToFld(R, H, _).
-
-RegPtsToFld(R, H, T) :- alloca(_, R, H), isTy(T).
-
-RegPtsToFld(R, H, T) :- gep(_, R, SrcR, _), RegPtsToObj(SrcR, H), isTy(T).
-// ? RegPtsToFld(R, H, T) :- gep(T*, R, SrcR, _), RegPtsToObj(SrcR, H).
+RegPtsToObj(R, H) :- alloca(_, R, H).
+RegPtsToObj(R, H) :- assign(_, R, SrcR), RegPtsToObj(Src, H).
 
 RegPtsToFld(R, H, T) :- assign(_, R, Src), RegPtsToFld(Src, H, T).
+RegPtsToFld(R, H, T) :- gep(T, R, SrcR, _), RegPtsToObj(SrcR, H).
 
-RegPtsToFld(SrcR, H2, T) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H, T),
-                            FldPtsToFld(H, T, H2, T2), isPtrTy(T).
+ObjPtsToObj(H2, H1) :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
+                       RegPtsToObj(Ptr, H1), RegPtsToObj(DstR, H2).
 
+FldPtsToObj(H2, T2, H1) :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
+                           RegPtsToObj(Ptr, H1), RegPtsToFld(DstR, H2, T2).
 
-RegPtsToFld(R, H2, T) :- store(ValT, ValR, DstT, DstR), RegPtsFld(DstR, H, T),
-                            FldPtsToFld(H, T, H2, T2), isPtrTy(T).
+ObjPtsToFld(H2, H1, T1) :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
+                           RegPtsToFld(Ptr, H1, T1), RegPtsToObj(DstR, H2).
 
-
-~RegPtsToFld(R, H2, T3) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H, T),
-                           FldPtsToFld(H, T, H2, T2), isPtrTy(T), T3 != T.
-
-
-FldPtsToFld(H2, T2, H1, T1), :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
+FldPtsToFld(H2, T2, H1, T1) :- store(PtrTy, Ptr, DstTy, DstR), isPtrTy(PtrTy),
                                RegPtsToFld(Ptr, H1, T1), RegPtsToFld(DstR, H2, T2).
 
-RegPtsToFld(DstR, H2, T) :- store(ValT, ValR, DstT, DstR), RegPtsFld(DstR, H, T),
-                            FldPtsToFld(H, T, H2, T2), isPtrTy(T).
+RegPtsToObj(SrcR, H2) :- load(T, R, SrcT, SrcR), RegPtsObj(SrcR, H),
+                            ObjPtsToObj(H, H2), isPtrTy(T).
 
+RegPtsToFld(SrcR, H2, T2) :- load(T, R, SrcT, SrcR), RegPtsObj(SrcR, H),
+                             ObjPtsToFldj(H, H2, T2), isPtrTy(T).
 
+RegPtsToObj(SrcR, H2) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H, T1),
+                         FldPtsToObj(H, T1, H2), isPtrTy(T).
 
-RegPtsToFld(SrcR, H, SrcT) :- load(T, R, SrcT, SrcR), RegPtsObj(SrcR, H).
-RegPtsToFld(DstR, H, DstTy) :- store(Val, ValT, DstTy, DstR), RegPtsObj(DstR, H).
+RegPtsToFld(SrcR, H2, T2) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H, T1),
+                             FldPtsToFldj(H, T1, H2, T2), isPtrTy(T).
