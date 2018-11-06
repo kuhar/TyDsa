@@ -28,14 +28,17 @@ RegPtsToFld(R, H2, N2) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H1, N1),
 
 // Field collapse:
 // Incoming (destination collapsed)
-FldPtsToFld(H1, T1, N1, H2, _) :- isCollapsed(H2),
-                                  FldPtsToFld(H1, T1, N1, H2, _).
-FldPtsToFld(H1, T1, N1, H2, _) :- isCollapsed(H2),
-                                  RegPtsToFld(_, H2, _).
+FldPtsToFld(H1, T1, N1, H2, N) :- isCollapsed(H2),
+                                  FldPtsToFld(H1, T1, N1, H2, _),
+                                  FldPtsToFld(_, _, _, _, N).
+RegPtsToFld(H1, T1, N1, H2, N) :- isCollapsed(H2),
+                                  RegPtsToFld(_, H2, _),
+                                  RegPtsToFld(_, _, N).
 
 // Outgoing (source collapsed)
-FldPtsToFld(H1, T1, _, H2, N2) :- isCollapsed(H1),
-                                  FldPtsToFld(H1, T1, _2, H2, N2).
+FldPtsToFld(H1, T1, N2, H, N) :- isCollapsed(H1),
+                                 FldPtsToFld(H1, T1, N1, H, N),
+                                 FldPtsToFld(_, T1, N2, _, _).
 
-isCollapsed(H) :- store("i8*", _, "i8", DstR),
+isCollapsed(H) :- store("i8", _, "i8*", DstR),
                   RegPtsToFld(DstR, H, _).
