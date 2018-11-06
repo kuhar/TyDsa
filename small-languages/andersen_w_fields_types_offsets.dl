@@ -1,0 +1,27 @@
+// Andersen, language w/ types and no offsets
+
+// Assumption: in concrete semantics, a write that overlaps many fields is not allowed
+// Alternative assumption: overlapping write doesn't create new legal pointers
+// Restriction: load of a pointer must read from a properly typed memory
+
+.decl alloca(t:type, r:reg, h:heap)
+.decl load(res_ty:type, r:reg, from_ty:type, from:reg)
+
+.decl store(val_ty:type, val:reg, dest_ty:type, dest:reg)
+.decl assign(t:type, r:reg, src_a:reg)
+.decl gep(t:type, r:reg, src_r:reg, f:field)
+
+.decl RegPtsToFld(r:reg, h:heap, o:num)
+.decl FldPtsToFld(h_src:heap, f_src:field, o_src:num, h_dst:heap, o_dst:num)
+
+RegPtsToFld(R, H, 0) :- alloca(_, R, H).
+RegPtsToFld(R, H, N) :- assign(_, R, SrcR), RegPtsToFld(Src, H, N).
+
+RegPtsToObj(R, H, N + O) :- gep(_T, R, SrcR, O), RegPtsToFld(SrcR, H, N).
+
+
+FldPtsToFld(H2, DstTy, N2, H1, N1) :- store(PtrTy, PtrR, DstTy, DstR), isPtrTy(PtrTy),
+                                      RegPtsToFld(PtrR, H1, N1), RegPtsToFld(DstR, H2, N2).
+
+RegPtsToFld(R, H2, N2) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H1, N1),
+                          FldPtsToFld(H1, SrcT, N1, H2, N2), isPtrTy(T).

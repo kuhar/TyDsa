@@ -1,0 +1,29 @@
+// Andersen, language w/ types and no offsets
+
+// Assumption: in concrete semantics, a write that overlaps many fields is not allowed
+// Alternative assumption: overlapping write doesn't create new legal pointers
+// Restriction: load of a pointer must read from a properly typed memory
+
+.decl alloca(t:type, r:reg, h:heap)
+.decl load(res_ty:type, r:reg, from_ty:type, from:reg)
+
+.decl store(val_ty:type, val:reg, dest_ty:type, dest:reg)
+.decl assign(t:type, r:reg, src_a:reg)
+.decl gep(t:type, r:reg, src_r:reg, f:field)
+
+.decl RegPtsToObj(r:reg, h:heap)
+.decl FldPtsToObj(h_src:heap, f_src:field, h_dst:heap)
+
+RegPtsToObj(R, H) :- alloca(_, R, H).
+RegPtsToObj(R, H) :- assign(_, R, SrcR), RegPtsToObj(Src, H).
+
+RegPtsToObj(R, H) :- gep(_T, R, SrcR, _), RegPtsToObj(SrcR, H).
+
+
+FldPtsToObj(H2, T3, H1) :- store(PtrTy, PtrR, DstTy, DstR), isPtrTy(PtrTy),
+                           RegPtsToObj(PtrR, H1), RegPtsToObj(DstR, H2), isTBAAAlias(DstTy, T3).
+
+RegPtsToObj(R, H2) :- load(T, R, SrcT, SrcR), RegPtsObj(SrcR, H),
+                      FldPtsToObj(H, T3, H2), isPtrTy(T), isTBAAAlias(SrcT, T3).
+
+// Assume that isTBAAAlias(X, Y) is true if X and Y alias and excludes omni character type

@@ -40,7 +40,7 @@ RegPtsToObj(SrcR, H2) :- load(T, R, SrcT, SrcR), RegPtsObj(SrcR, H),
                             ObjPtsToObj(H, H2), isPtrTy(T).
 
 RegPtsToFld(SrcR, H2, T2) :- load(T, R, SrcT, SrcR), RegPtsObj(SrcR, H),
-                             ObjPtsToFldj(H, H2, T2), isPtrTy(T).
+                             ObjPtsToFld(H, H2, T2), isPtrTy(T).
 
 RegPtsToObj(SrcR, H2) :- load(T, R, SrcT, SrcR), RegPtsFld(SrcR, H, T1),
                          FldPtsToObj(H, T1, H2), isPtrTy(T).
